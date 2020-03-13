@@ -28,6 +28,7 @@ type Report struct {
 }
 
 type Destination struct {
+	Console bool   `yaml:"console"` // if true output to console
 	GroupID string `yaml:"group_id"`
 }
 

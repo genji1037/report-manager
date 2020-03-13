@@ -13,6 +13,12 @@ func ExchangeReport() error {
 	if err != nil {
 		return fmt.Errorf("make report failed: %s", err.Error())
 	}
+	if config.GetServer().Template.ExchangeDataReport.Destination.Console {
+		fmt.Println("=====console report=====")
+		fmt.Println(reportContent)
+		fmt.Println("========================")
+		return nil
+	}
 	// send report
 	err = proxy.SendMessage(reportContent, config.GetServer().Template.ExchangeDataReport.Destination.GroupID)
 	if err != nil {
