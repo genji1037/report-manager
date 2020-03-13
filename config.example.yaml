@@ -1,0 +1,54 @@
+host: 0.0.0.0
+
+port: 18096
+
+template:
+  exchange_data_report:
+    content: |
+      报告日期($(report_date))
+      OTC买卖单金额，交易人数
+      $(otc_report)
+      币币交易量，交易人数
+      $(ctc_report)
+      交易所新增用户
+      OTC: $(otc_new_trader_num), 币币: $(ctc_new_trader_num)
+      交易所活跃用户
+      OTC: $(otc_trader_num), 币币: $(ctc_trader_num)
+      12-24点的平均在线人数
+      $(half_bottom_avg_online)
+      流通量
+      $(ctc_circulation_amount_report)
+      收盘价格
+      $(ctc_closing_price_report)
+    destination:
+      group_id: 587fe66c-d433-4ff9-8dc4-52b2f2df9e71
+  otc_daily_report_line: >
+    交易对: $(market_id),
+    买单金额: $(buy_amount),
+    交易人数(买): $(buyer_num),
+    卖单金额: $(sell_amount),
+    交易人数(卖): $(seller_num)
+  ctc_daily_report_line: >
+    交易对: $(market),
+    交易量: $(amount),
+    交易人数: $(trader_num)
+  ctc_circulation_amount_report_line: >
+    币种: $(token),
+    最新流通量: $(circulate_amount)
+  ctc_closing_price_report_line: >
+    交易对: $(market),
+    收盘价: $(closing_price)
+
+proxy:
+  exchange:
+    base_uri: https://testm.isecret.im
+    database:
+      host: 127.0.0.1
+      user: root
+      password: Cyy123456
+      database: report_manager
+      charset: utf8
+      max_idle_conns: 2
+      max_open_conns: 10
+  candy:
+    base_uri: https://testm.isecret.im
