@@ -37,7 +37,7 @@ func ExchangeReport() (string, error) {
 		},
 		&collector.ExchangeUserMetrics{
 			FromTs: int(yesterdayMiddleTs),
-			ToTs:   int(yesterdayEndTs),
+			ToTs:   int(yesterdayEndTs - 1),
 		},
 		&collector.CirculateAmount{},
 		&collector.LatestPrice{},

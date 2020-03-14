@@ -167,6 +167,7 @@ func (e *ExchangeUserMetrics) Collect() error {
 }
 
 func (e *ExchangeUserMetrics) Render(ori string) string {
+	// avg online
 	var numerator, denominator int64
 	for _, v := range e.Data {
 		numerator += v.OnlineNum
@@ -176,8 +177,15 @@ func (e *ExchangeUserMetrics) Render(ori string) string {
 		return ori
 	}
 	avgOnlineNum := numerator / denominator
+
+	// daily uv
+	var dailyUV int64
+	if len(e.Data) > 0 {
+		dailyUV = e.Data[0].DailyUv
+	}
 	return render(ori, map[string]string{
 		"half_bottom_avg_online": strconv.Itoa(int(avgOnlineNum)),
+		"daily_uv":               strconv.Itoa(int(dailyUV)),
 	})
 }
 
