@@ -20,6 +20,8 @@ type Template struct {
 	CtcDailyReportLine             string `yaml:"ctc_daily_report_line"`
 	CtcCirculationAmountReportLine string `yaml:"ctc_circulation_amount_report_line"`
 	CtcClosingPriceReportLine      string `yaml:"ctc_closing_price_report_line"`
+	MallDestroyFailedReport        Report `yaml:"mall_destroy_failed_report"`
+	MallDestroyFailedLine          string `yaml:"mall_destroy_failed_line"`
 }
 
 type Report struct {
@@ -36,6 +38,7 @@ type Proxy struct {
 	Exchange     Exchange     `yaml:"exchange"`
 	Candy        Candy        `yaml:"candy"`
 	OpenPlatform OpenPlatform `yaml:"open_platform"`
+	MallDestroy  MallDestroy  `yaml:"mall_destroy"`
 }
 
 type Exchange struct {
@@ -48,6 +51,10 @@ type Candy struct {
 }
 
 type OpenPlatform struct {
+	BaseURI string `yaml:"base_uri"`
+}
+
+type MallDestroy struct {
 	BaseURI string `yaml:"base_uri"`
 }
 
@@ -104,5 +111,4 @@ func (s Server) Validate() error {
 }
 
 func (s *Server) Init() {
-
 }

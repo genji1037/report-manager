@@ -17,6 +17,13 @@ func DoReport(c *gin.Context) {
 			return
 		}
 		respond.Success(c, "ok")
+	case "mall_destroy_failed_report":
+		err := service.MallDestroyFailedReport()
+		if err != nil {
+			respond.Error(c, http.StatusInternalServerError, http.StatusInternalServerError, err.Error())
+			return
+		}
+		respond.Success(c, "ok")
 	default:
 		respond.Error(c, http.StatusBadRequest, http.StatusBadRequest, "report not found")
 	}

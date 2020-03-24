@@ -52,3 +52,25 @@ func ExchangeReport() (string, error) {
 	}
 	return out, nil
 }
+
+func MallDestroyFailedList() (string, error) {
+	logger.Infof("[report] exchange report begin")
+	defer logger.Infof("[report] exchange report done")
+
+	loc := util.ShLoc()
+	today := time.Now().In(loc).Format("2006-01-02")
+
+	// collect all data
+	collectors := []collector.Collector{
+		&collector.FailedOrderReport{},
+	}
+	collector.Collect(collectors)
+
+	// render
+	collectors = append(collectors, collector.NewStringRender("report_date", today))
+	out := config.GetServer().Template.MallDestroyFailedReport.Content
+	for i := range collectors {
+		out = collectors[i].Render(out)
+	}
+	return out, nil
+}
