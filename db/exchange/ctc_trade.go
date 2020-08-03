@@ -30,5 +30,18 @@ group by
 `, begin, end).Scan(&rs).Error
 
 	return rs, err
+}
 
+func (CTCTrade) SumFrozenAmount() ([]model.CTCFrozen, error) {
+	result := make([]model.CTCFrozen, 0)
+	sql := `
+SELECT 
+    IF(quote = 'bid', bid, ask) AS token, SUM(` + "`locked`" + `) amount
+FROM
+    ctc_orders
+WHERE
+    state = 'wait' AND is_robot = 0
+GROUP BY token`
+	err := gormDb.Raw(sql).Scan(&result).Error
+	return result, err
 }

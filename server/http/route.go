@@ -17,7 +17,7 @@ func Run(host string, port int) {
 
 	metrics.InitCustomerMetrics(router)
 
-	// 根据AppID获取特定APP信息
+	// 报告
 	router.POST("/report/:name", handler.DoReport)
 
 	err := router.Run(fmt.Sprintf("%s:%d", host, port))

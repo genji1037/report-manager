@@ -41,6 +41,8 @@ func ExchangeReport() (string, error) {
 		},
 		&collector.CirculateAmount{},
 		&collector.LatestPrice{},
+		&collector.OTCFrozenAmount{},
+		&collector.CTCFrozenAmount{},
 	}
 	collector.Collect(collectors)
 

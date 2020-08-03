@@ -54,3 +54,17 @@ type MarketTicker struct {
 	Ticker    Ticker `json:"ticker"`    // 行情信息
 	Timestamp int64  `json:"timestamp"` // 时间戳
 }
+
+type Frozen struct {
+	Market string          `json:"-"`      // 市场对
+	Amount decimal.Decimal `json:"amount"` // 冻结金额
+	Token  string          `json:"token"`  // 币种
+}
+
+type OTCFrozen struct {
+	Frozen
+}
+
+type CTCFrozen struct {
+	Frozen
+}

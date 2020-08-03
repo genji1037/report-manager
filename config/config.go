@@ -20,6 +20,8 @@ type Template struct {
 	CtcDailyReportLine             string `yaml:"ctc_daily_report_line"`
 	CtcCirculationAmountReportLine string `yaml:"ctc_circulation_amount_report_line"`
 	CtcClosingPriceReportLine      string `yaml:"ctc_closing_price_report_line"`
+	OTCFrozenAmountLine            string `yaml:"otc_frozen_amount_line"`
+	CTCFrozenAmountLine            string `yaml:"ctc_frozen_amount_line"`
 	MallDestroyFailedReport        Report `yaml:"mall_destroy_failed_report"`
 	MallDestroyFailedLine          string `yaml:"mall_destroy_failed_line"`
 }
