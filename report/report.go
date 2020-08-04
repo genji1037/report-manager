@@ -60,8 +60,8 @@ func RadarOTCReport() (string, error) {
 	defer logger.Infof("[report] radar otc report done")
 	loc := util.ShLoc()
 	now := time.Now().In(loc)
-	begin := now
-	end := begin.Add(24 * time.Hour)
+	end := now
+	begin := end.Add(-24 * time.Hour)
 	date := now.Format("2006-01-02")
 	// collect all data
 	collectors := []collector.Collector{

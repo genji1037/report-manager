@@ -29,7 +29,7 @@ FROM
     WHERE
         state = 1 and updated_at BETWEEN ? AND ?) t
 GROUP BY market_id
-`, begin, end).Scan(&rs).Error
+`, begin, end).Debug().Scan(&rs).Error
 	return rs, err
 }
 
@@ -62,7 +62,7 @@ func (Trade) NewTraderNum(begin, end time.Time) (int, error) {
 	}{}
 	sql := `
 SELECT 
-    COUNT(0)
+    COUNT(0) as cnt
 FROM
     (SELECT 
         newuids.trader_id
@@ -91,6 +91,6 @@ FROM
         created_at < ?) olduids ON newuids.trader_id = olduids.trader_id
     WHERE
         olduids.trader_id IS NULL) uids`
-	err := gormDb.Raw(sql, begin, end, begin, end, begin, begin).Scan(&result).Error
+	err := gormDb.Debug().Raw(sql, begin, end, begin, end, begin, begin).Scan(&result).Error
 	return result.Cnt, err
 }

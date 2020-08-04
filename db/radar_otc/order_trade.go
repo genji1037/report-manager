@@ -25,6 +25,6 @@ FROM
     GROUP BY market_id) summary
 GROUP BY market_id
 `
-	err := gormDb.Raw(sql).Scan(&result).Error
+	err := gormDb.Raw(sql).Debug().Scan(&result).Error
 	return result, err
 }
