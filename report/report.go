@@ -74,7 +74,10 @@ func RadarOTCReport() (string, error) {
 			End:   end,
 		},
 		&collector.RadarOTCFrozenAmount{},
-		//&collector.RadarMerchantSummary{},
+		&collector.RadarMerchantSummary{
+			Begin: begin,
+			End:   end,
+		},
 	}
 	collector.Collect(collectors)
 

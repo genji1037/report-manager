@@ -25,6 +25,7 @@ type Template struct {
 	MallDestroyFailedReport        Report `yaml:"mall_destroy_failed_report"`
 	MallDestroyFailedLine          string `yaml:"mall_destroy_failed_line"`
 	RadarOTCReport                 Report `yaml:"radar_otc_report"`
+	RadarMerchantSummaryLine       string `yaml:"radar_merchant_summary_line"`
 }
 
 type Report struct {

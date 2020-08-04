@@ -137,14 +137,68 @@ func (o RadarOTCFrozenAmount) Render(ori string) string {
 type RadarMerchantSummary struct {
 	Begin time.Time
 	End   time.Time
-	Data  []RadarMerchantSummary
+	Data  []model.RadarMerchantSummary
 }
 
 func (r *RadarMerchantSummary) Collect() error {
-	// TODO
+	buys, err := radar_otc.Trade{}.MerchantSummaryBuy(r.Begin, r.End)
+	if err != nil {
+		return fmt.Errorf("radar_otc.Trade{}.MerchantSummaryBuy(%s, %s) failed: %v", r.Begin, r.End, err)
+	}
+	sells, err := radar_otc.Trade{}.MerchantSummarySell(r.Begin, r.End)
+	if err != nil {
+		return fmt.Errorf("radar_otc.Trade{}.MerchantSummarySell(%s, %s) failed: %v", r.Begin, r.End, err)
+	}
+	// merge buys and sells
+	getKey := func(sum model.RadarMerchantSummary) string {
+		return sum.UID + "," + sum.Market
+	}
+	results := make([]model.RadarMerchantSummary, 0, len(buys))
+	mapper := make(map[string]model.RadarMerchantSummary)
+	for _, buy := range buys {
+		key := getKey(buy)
+		sum, ok := mapper[key]
+		if ok {
+			sum.BuyVolume = buy.BuyVolume
+			sum.BuyDealTradeCount = buy.BuyDealTradeCount
+		} else {
+			mapper[key] = buy
+		}
+	}
+	for _, sell := range sells {
+		key := getKey(sell)
+		sum, ok := mapper[key]
+		if ok {
+			sum.BuyVolume = sell.BuyVolume
+			sum.BuyDealTradeCount = sell.BuyDealTradeCount
+		} else {
+			mapper[key] = sell
+		}
+	}
+	for _, v := range mapper {
+		results = append(results, v)
+	}
+
+	r.Data = results
+
 	return nil
 }
 
 func (r *RadarMerchantSummary) Render(ori string) string {
-	return ""
+	lineTemp := config.GetServer().Template.RadarMerchantSummaryLine
+	lineArr := make([]string, 0, len(r.Data))
+	for _, v := range r.Data {
+		lineArr = append(lineArr, render(lineTemp, map[string]string{
+			"uid":                   v.UID,
+			"market":                v.Market,
+			"sell_volume":           v.SellVolume.String(),
+			"buy_volume":            v.BuyVolume.String(),
+			"sell_deal_trade_count": strconv.Itoa(v.SellDealTradeCount),
+			"buy_deal_trade_count":  strconv.Itoa(v.BuyDealTradeCount),
+		}))
+	}
+
+	return render(ori, map[string]string{
+		"radar_merchant_summary_line": strings.Join(lineArr, ""),
+	})
 }

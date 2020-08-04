@@ -94,3 +94,59 @@ FROM
 	err := gormDb.Debug().Raw(sql, begin, end, begin, end, begin, begin).Scan(&result).Error
 	return result.Cnt, err
 }
+
+func (Trade) MerchantSummaryBuy(begin, end time.Time) ([]model.RadarMerchantSummary, error) {
+	result := make([]model.RadarMerchantSummary, 0)
+	sql := `
+SELECT 
+    m.uid,
+    t.market_id as market,
+    SUM(t.volume) AS buy_volume,
+    COUNT(t.id) AS buy_deal_trade_count
+FROM
+    (SELECT 
+        r.uid
+    FROM
+        real_names r
+    INNER JOIN deposits d ON r.uid = d.uid AND d.state = 'paid'
+        AND r.state = 'done') m
+        LEFT JOIN
+    (SELECT 
+        *
+    FROM
+        trades
+    WHERE
+        created_at BETWEEN ? AND ?) t ON m.uid = t.buyer_id
+GROUP BY m.uid , t.market_id
+HAVING t.market_id IS NOT NULL`
+	err := gormDb.Raw(sql, begin, end).Scan(&result).Error
+	return result, err
+}
+
+func (Trade) MerchantSummarySell(begin, end time.Time) ([]model.RadarMerchantSummary, error) {
+	result := make([]model.RadarMerchantSummary, 0)
+	sql := `
+SELECT 
+    m.uid,
+    t.market_id as market,
+    SUM(t.volume) AS sell_volume,
+    COUNT(t.id) AS sell_deal_trade_count
+FROM
+    (SELECT 
+        r.uid
+    FROM
+        real_names r
+    INNER JOIN deposits d ON r.uid = d.uid AND d.state = 'paid'
+        AND r.state = 'done') m
+        LEFT JOIN
+    (SELECT 
+        *
+    FROM
+        trades
+    WHERE
+        created_at BETWEEN ? AND ?) t ON m.uid = t.seller_id
+GROUP BY m.uid , t.market_id
+HAVING t.market_id IS NOT NULL`
+	err := gormDb.Raw(sql, begin, end).Scan(&result).Error
+	return result, err
+}
