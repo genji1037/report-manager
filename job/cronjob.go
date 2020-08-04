@@ -16,7 +16,17 @@ func StartCronJob() {
 	}
 	c := cron.NewWithLocation(loc)
 
+	err = c.AddFunc("0 2 0 * * *", withErr(service.ExchangeReport))
+	if err != nil {
+		logger.Warnf("add func failed: %s", err.Error())
+	}
+
 	err = c.AddFunc("0 0 21 * * *", withErr(service.RadarOTCReport))
+	if err != nil {
+		logger.Warnf("add func failed: %s", err.Error())
+	}
+
+	err = c.AddFunc("0 3 0 * * *", withErr(service.MallDestroyFailedReport))
 	if err != nil {
 		logger.Warnf("add func failed: %s", err.Error())
 	}
