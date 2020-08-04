@@ -5,6 +5,7 @@ import (
 	_ "net/http/pprof"
 	"report-manager/config"
 	"report-manager/db/exchange"
+	"report-manager/db/radar_otc"
 	"report-manager/db/types"
 	"report-manager/job"
 	"report-manager/logger"
@@ -34,6 +35,21 @@ func main() {
 	if err != nil {
 		logger.Panicf("Failed to open exchange database, %v", err)
 	}
+	logger.Infof("exchange db connected")
+
+	radar_otc.Open(types.Connection{
+		Host:         serverCfg.Proxy.RadarOTC.Database.Host,
+		User:         serverCfg.Proxy.RadarOTC.Database.User,
+		Password:     serverCfg.Proxy.RadarOTC.Database.Password,
+		Database:     serverCfg.Proxy.RadarOTC.Database.Database,
+		Charset:      serverCfg.Proxy.RadarOTC.Database.Charset,
+		MaxIdleConns: serverCfg.Proxy.RadarOTC.Database.MaxIdleConns,
+		MaxOpenConns: serverCfg.Proxy.RadarOTC.Database.MaxOpenConns,
+	})
+	if err != nil {
+		logger.Panicf("Failed to open radar otc database, %v", err)
+	}
+	logger.Infof("radar otc db connected")
 
 	// 开启http服务
 	go serverHttp.Run(serverCfg.Host, serverCfg.Port)

@@ -55,6 +55,38 @@ func ExchangeReport() (string, error) {
 	return out, nil
 }
 
+func RadarOTCReport() (string, error) {
+	logger.Infof("[report] radar otc report begin")
+	defer logger.Infof("[report] radar otc report done")
+	loc := util.ShLoc()
+	now := time.Now().In(loc)
+	begin := now
+	end := begin.Add(24 * time.Hour)
+	date := now.Format("2006-01-02")
+	// collect all data
+	collectors := []collector.Collector{
+		&collector.RadarOTCDailyReport{
+			Begin: begin,
+			End:   end,
+		},
+		&collector.RadarOTCDailyTraderNum{
+			Begin: begin,
+			End:   end,
+		},
+		&collector.RadarOTCFrozenAmount{},
+		//&collector.RadarMerchantSummary{},
+	}
+	collector.Collect(collectors)
+
+	// render
+	collectors = append(collectors, collector.NewStringRender("report_date", date))
+	out := config.GetServer().Template.RadarOTCReport.Content
+	for i := range collectors {
+		out = collectors[i].Render(out)
+	}
+	return out, nil
+}
+
 func MallDestroyFailedList() (string, error) {
 	logger.Infof("[report] exchange report begin")
 	defer logger.Infof("[report] exchange report done")

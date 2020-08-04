@@ -24,6 +24,7 @@ type Template struct {
 	CTCFrozenAmountLine            string `yaml:"ctc_frozen_amount_line"`
 	MallDestroyFailedReport        Report `yaml:"mall_destroy_failed_report"`
 	MallDestroyFailedLine          string `yaml:"mall_destroy_failed_line"`
+	RadarOTCReport                 Report `yaml:"radar_otc_report"`
 }
 
 type Report struct {
@@ -41,6 +42,7 @@ type Proxy struct {
 	Candy        Candy        `yaml:"candy"`
 	OpenPlatform OpenPlatform `yaml:"open_platform"`
 	MallDestroy  MallDestroy  `yaml:"mall_destroy"`
+	RadarOTC     RadarOTC     `yaml:"radar_otc"`
 }
 
 type Exchange struct {
@@ -58,6 +60,10 @@ type OpenPlatform struct {
 
 type MallDestroy struct {
 	BaseURI string `yaml:"base_uri"`
+}
+
+type RadarOTC struct {
+	Database MySQL `yaml:"database"`
 }
 
 type MySQL struct {
