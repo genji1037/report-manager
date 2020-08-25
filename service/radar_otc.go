@@ -26,3 +26,25 @@ func RadarOTCReport() error {
 	}
 	return nil
 }
+
+func RadarOTCWaitingRealNames() error {
+	reportContent, err := report.RadarOTCWaitingRealNames()
+	if err != nil {
+		if err == report.DoNotReport {
+			return nil
+		}
+		return fmt.Errorf("make report failed: %s", err.Error())
+	}
+	if config.GetServer().Template.RadarOTCWaitingRealNames.Destination.Console {
+		fmt.Println("=====console report=====")
+		fmt.Println(reportContent)
+		fmt.Println("========================")
+		return nil
+	}
+	// send report
+	err = proxy.SendMessage(reportContent, config.GetServer().Template.RadarOTCWaitingRealNames.Destination.GroupID)
+	if err != nil {
+		return fmt.Errorf("send message failed: %s", err.Error())
+	}
+	return nil
+}

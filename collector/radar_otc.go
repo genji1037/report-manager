@@ -202,3 +202,19 @@ func (r *RadarMerchantSummary) Render(ori string) string {
 		"radar_merchant_summary_line": strings.Join(lineArr, ""),
 	})
 }
+
+type RadarWaitingRealNames struct {
+	Num int
+}
+
+func (r *RadarWaitingRealNames) Collect() error {
+	cnt, err := radar_otc.RealName{}.CountWaitingRealNames()
+	r.Num = cnt
+	return err
+}
+
+func (r *RadarWaitingRealNames) Render(ori string) string {
+	return render(ori, map[string]string{
+		"n": strconv.Itoa(r.Num),
+	})
+}

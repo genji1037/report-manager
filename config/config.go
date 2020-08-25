@@ -26,6 +26,7 @@ type Template struct {
 	MallDestroyFailedLine          string `yaml:"mall_destroy_failed_line"`
 	RadarOTCReport                 Report `yaml:"radar_otc_report"`
 	RadarMerchantSummaryLine       string `yaml:"radar_merchant_summary_line"`
+	RadarOTCWaitingRealNames       Report `yaml:"radar_otc_waiting_real_names"`
 }
 
 type Report struct {

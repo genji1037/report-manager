@@ -38,6 +38,12 @@ template:
   ctc_closing_price_report_line: >
     交易对: $(market),
     收盘价: $(closing_price)
+  radar_otc_waiting_real_names:
+    content: |
+      手雷OTC有$(n)个待审核商户，请及时处理!
+    destination:
+      group_id: 6a86e11e-d9ce-4d1f-aa1e-a2d3c91583ec
+      console: true
 
 proxy:
   exchange:

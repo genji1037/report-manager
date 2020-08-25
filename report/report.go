@@ -111,3 +111,21 @@ func MallDestroyFailedList() (string, error) {
 	}
 	return out, nil
 }
+
+func RadarOTCWaitingRealNames() (string, error) {
+	logger.Infof("[report] radar otc real name notice begin")
+	defer logger.Infof("[report] radar otc real name notice report done")
+	out := config.GetServer().Template.RadarOTCWaitingRealNames.Content
+	realNameCollector := &collector.RadarWaitingRealNames{}
+	err := realNameCollector.Collect()
+	if err != nil {
+		logger.Errorf("[report] radar otc real name collect waiting real name num failed: %v", err)
+		return out, err
+	}
+	// do not notice if no waiting real names
+	if realNameCollector.Num <= 0 {
+		logger.Infof("[report] radar otc no waiting real names")
+		return out, DoNotReport
+	}
+	return realNameCollector.Render(out), nil
+}

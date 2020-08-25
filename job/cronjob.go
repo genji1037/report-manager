@@ -31,6 +31,12 @@ func StartCronJob() {
 		logger.Warnf("add func failed: %s", err.Error())
 	}
 
+	// 手雷OTC待审核商户提醒
+	err = c.AddFunc("@every 30m", withErr(service.RadarOTCWaitingRealNames))
+	if err != nil {
+		logger.Warnf("add func failed: %s", err.Error())
+	}
+
 	logger.Infof("[cron] started")
 	c.Run()
 }

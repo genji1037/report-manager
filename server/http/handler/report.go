@@ -17,6 +17,8 @@ func DoReport(c *gin.Context) {
 		err = service.MallDestroyFailedReport()
 	case "radar_otc_report":
 		err = service.RadarOTCReport()
+	case "radar_waiting_real_names":
+		err = service.RadarOTCWaitingRealNames()
 	default:
 		respond.Error(c, http.StatusBadRequest, http.StatusBadRequest, "report not found")
 		return
