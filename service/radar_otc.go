@@ -5,6 +5,8 @@ import (
 	"report-manager/config"
 	"report-manager/proxy"
 	"report-manager/report"
+	"report-manager/util"
+	"time"
 )
 
 func RadarOTCReport() error {
@@ -28,6 +30,9 @@ func RadarOTCReport() error {
 }
 
 func RadarOTCWaitingRealNames() error {
+	if restTime() {
+		return nil
+	}
 	reportContent, err := report.RadarOTCWaitingRealNames()
 	if err != nil {
 		if err == report.DoNotReport {
@@ -47,4 +52,9 @@ func RadarOTCWaitingRealNames() error {
 		return fmt.Errorf("send message failed: %s", err.Error())
 	}
 	return nil
+}
+
+func restTime() bool {
+	now := time.Now().In(util.ShLoc())
+	return now.Hour() < 9
 }
