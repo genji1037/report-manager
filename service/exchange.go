@@ -9,7 +9,7 @@ import (
 
 func ExchangeReport() error {
 	// make a report
-	reportContent, err := report.ExchangeReport()
+	reportContent, err := report.MakeExchangeReport()
 	if err != nil {
 		return fmt.Errorf("make report failed: %s", err.Error())
 	}

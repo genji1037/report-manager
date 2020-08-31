@@ -31,8 +31,8 @@ func StartCronJob() {
 		logger.Warnf("add func failed: %s", err.Error())
 	}
 
-	// 手雷OTC待审核商户提醒
-	err = c.AddFunc("@every 30m", withErr(service.RadarOTCWaitingRealNames))
+	// 手雷OTC提醒（待审核商户提醒，失败或待重试的转账）
+	err = c.AddFunc("@every 30m", withErr(service.RadarOTCNotice))
 	if err != nil {
 		logger.Warnf("add func failed: %s", err.Error())
 	}

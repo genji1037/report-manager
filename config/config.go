@@ -26,7 +26,7 @@ type Template struct {
 	MallDestroyFailedLine          string `yaml:"mall_destroy_failed_line"`
 	RadarOTCReport                 Report `yaml:"radar_otc_report"`
 	RadarMerchantSummaryLine       string `yaml:"radar_merchant_summary_line"`
-	RadarOTCWaitingRealNames       Report `yaml:"radar_otc_waiting_real_names"`
+	RadarOTCNotice                 Report `yaml:"radar_otc_notice"`
 }
 
 type Report struct {
@@ -65,7 +65,8 @@ type MallDestroy struct {
 }
 
 type RadarOTC struct {
-	Database MySQL `yaml:"database"`
+	BaseURI  string `yaml:"base_uri"`
+	Database MySQL  `yaml:"database"`
 }
 
 type MySQL struct {

@@ -9,8 +9,11 @@ import (
 	"time"
 )
 
-// ExchangeReport make a exchange report
-func ExchangeReport() (string, error) {
+type Report string
+
+// MakeExchangeReport make a exchange report
+// TODO implement through maker
+func MakeExchangeReport() (string, error) {
 	logger.Infof("[report] exchange report begin")
 	defer logger.Infof("[report] exchange report done")
 	loc := util.ShLoc()
@@ -55,7 +58,8 @@ func ExchangeReport() (string, error) {
 	return out, nil
 }
 
-func RadarOTCReport() (string, error) {
+// TODO implement through maker
+func MakeRadarOTCReport() (string, error) {
 	logger.Infof("[report] radar otc report begin")
 	defer logger.Infof("[report] radar otc report done")
 	loc := util.ShLoc()
@@ -90,7 +94,8 @@ func RadarOTCReport() (string, error) {
 	return out, nil
 }
 
-func MallDestroyFailedList() (string, error) {
+// TODO implement through maker
+func MakeMallDestroyFailedListReport() (string, error) {
 	logger.Infof("[report] exchange report begin")
 	defer logger.Infof("[report] exchange report done")
 
@@ -112,20 +117,25 @@ func MallDestroyFailedList() (string, error) {
 	return out, nil
 }
 
-func RadarOTCWaitingRealNames() (string, error) {
+func MakeRadarOTCNotice() (string, error) {
 	logger.Infof("[report] radar otc real name notice begin")
 	defer logger.Infof("[report] radar otc real name notice report done")
-	out := config.GetServer().Template.RadarOTCWaitingRealNames.Content
+	template := config.GetServer().Template.RadarOTCNotice.Content
+
+	// collect real name
 	realNameCollector := &collector.RadarWaitingRealNames{}
 	err := realNameCollector.Collect()
 	if err != nil {
 		logger.Errorf("[report] radar otc real name collect waiting real name num failed: %v", err)
-		return out, err
+		return template, err
 	}
+
+	// collect failed or retry transfer
+
 	// do not notice if no waiting real names
 	if realNameCollector.Num <= 0 {
 		logger.Infof("[report] radar otc no waiting real names")
-		return out, DoNotReport
+		return template, DoNotReport
 	}
-	return realNameCollector.Render(out), nil
+	return realNameCollector.Render(template), nil
 }

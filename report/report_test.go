@@ -35,7 +35,7 @@ func TestMain(m *testing.M) {
 }
 
 func TestExchangeReport(t *testing.T) {
-	content, err := ExchangeReport()
+	content, err := MakeExchangeReport()
 	if err != nil {
 		t.Fatal(err)
 	}

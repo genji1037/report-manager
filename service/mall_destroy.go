@@ -9,7 +9,7 @@ import (
 
 func MallDestroyFailedReport() error {
 	// make a report
-	reportContent, err := report.MallDestroyFailedList()
+	reportContent, err := report.MakeMallDestroyFailedListReport()
 	if err != nil {
 		return fmt.Errorf("make report failed: %s", err.Error())
 	}

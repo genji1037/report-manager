@@ -38,9 +38,12 @@ template:
   ctc_closing_price_report_line: >
     交易对: $(market),
     收盘价: $(closing_price)
-  radar_otc_waiting_real_names:
+  radar_otc_notice:
     content: |
-      手雷OTC有$(n)个待审核商户，请及时处理!
+      手雷OTC
+      有$(waiting_real_num)个待审核商户，
+      有$(failed_transfer_num)笔失败转账，
+      请及时处理!
     destination:
       group_id: 6a86e11e-d9ce-4d1f-aa1e-a2d3c91583ec
       console: true
@@ -58,3 +61,13 @@ proxy:
       max_open_conns: 10
   candy:
     base_uri: https://testm.isecret.im
+  radar_otc:
+    base_uri: http://127.0.0.1:18070
+    database:
+      host: 127.0.0.1
+      user: root
+      password: 123
+      database: radar_otc
+      charset: utf8
+      max_idle_conns: 2
+      max_open_conns: 10
