@@ -16,29 +16,23 @@ func StartCronJob() {
 	}
 	c := cron.NewWithLocation(loc)
 
-	err = c.AddFunc("0 2 0 * * *", withErr(service.ExchangeReport))
-	if err != nil {
-		logger.Warnf("add func failed: %s", err.Error())
-	}
-
-	err = c.AddFunc("0 0 21 * * *", withErr(service.RadarOTCReport))
-	if err != nil {
-		logger.Warnf("add func failed: %s", err.Error())
-	}
-
-	err = c.AddFunc("0 3 0 * * *", withErr(service.MallDestroyFailedReport))
-	if err != nil {
-		logger.Warnf("add func failed: %s", err.Error())
-	}
-
+	mustAddFunc(c, "@every 30s", func() { logger.Infof("[cron] still alive") })
+	mustAddFunc(c, "0 2 0 * * *", withErr(service.ExchangeReport))
+	mustAddFunc(c, "0 0 21 * * *", withErr(service.RadarOTCReport))
+	mustAddFunc(c, "0 3 0 * * *", withErr(service.MallDestroyFailedReport))
 	// 手雷OTC提醒（待审核商户提醒，失败或待重试的转账）
-	err = c.AddFunc("@every 30m", withErr(service.RadarOTCNotice))
-	if err != nil {
-		logger.Warnf("add func failed: %s", err.Error())
-	}
+	mustAddFunc(c, "@every 30m", withErr(service.RadarOTCNotice))
+	mustAddFunc(c, "0 0 0 * * *", withErr(service.PersistsOTCLockedTokens))
+	mustAddFunc(c, "0 0 0 * * *", withErr(service.PersistsCTCLockedTokens))
 
 	logger.Infof("[cron] started")
 	c.Run()
+}
+
+func mustAddFunc(c *cron.Cron, spec string, cmd func()) {
+	if err := c.AddFunc(spec, cmd); err != nil {
+		logger.Warnf("add func failed: %s", err.Error())
+	}
 }
 
 func withErr(f func() error) func() {

@@ -61,6 +61,12 @@ type Frozen struct {
 	Token  string          `json:"token"`  // 币种
 }
 
+type UserFrozen struct {
+	UID    string          `json:"uid"`
+	Amount decimal.Decimal `json:"amount"` // 冻结金额
+	Token  string          `json:"token"`  // 币种
+}
+
 type OTCFrozen struct {
 	Frozen
 }
