@@ -36,5 +36,5 @@ func PersistsCTCLockedTokens() error {
 }
 
 func genCSVFileName(prefix string) string {
-	return prefix + time.Now().Format("20060102") + strconv.Itoa(int(time.Now().UnixNano())) + ".csv"
+	return prefix + "_" + time.Now().Format("20060102") + "_" + strconv.Itoa(int(time.Now().UnixNano())) + ".csv"
 }

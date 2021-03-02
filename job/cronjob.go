@@ -16,7 +16,7 @@ func StartCronJob() {
 	}
 	c := cron.NewWithLocation(loc)
 
-	mustAddFunc(c, "@every 30s", func() { logger.Infof("[cron] still alive") })
+	//mustAddFunc(c, "@every 30s", func() { logger.Infof("[cron] still alive") })
 	mustAddFunc(c, "0 2 0 * * *", withErr(service.ExchangeReport))
 	mustAddFunc(c, "0 0 21 * * *", withErr(service.RadarOTCReport))
 	mustAddFunc(c, "0 3 0 * * *", withErr(service.MallDestroyFailedReport))
