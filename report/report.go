@@ -143,6 +143,8 @@ func MakeRadarOTCNotice() (string, error) {
 func MakeExchangeLockedTokensReport() (string, error) {
 	logger.Infof("[report] ExchangeLockedTokensReport begin")
 	defer logger.Infof("[report] ExchangeLockedTokensReport done")
+	loc := util.ShLoc()
+	today := time.Now().In(loc).Format("2006-01-02")
 	template := config.GetServer().Template.ExchangeLockedTokensReport.Content
 
 	finaUIDs := config.GetServer().ExchangeFinaUIDs
@@ -169,6 +171,7 @@ func MakeExchangeLockedTokensReport() (string, error) {
 	collector.Collect(collectors)
 
 	// render
+	collectors = append(collectors, collector.NewStringRender("report_date", today))
 	for i := range collectors {
 		template = collectors[i].Render(template)
 	}
