@@ -8,10 +8,11 @@ import (
 
 // config root
 type Server struct {
-	Host     string   `yaml:"host"` // 主机地址
-	Port     int      `yaml:"port"` // 端口号
-	Template Template `yaml:"template"`
-	Proxy    Proxy    `yaml:"proxy"`
+	Host             string   `yaml:"host"` // 主机地址
+	Port             int      `yaml:"port"` // 端口号
+	Template         Template `yaml:"template"`
+	Proxy            Proxy    `yaml:"proxy"`
+	ExchangeFinaUIDs []string `yaml:"exchange_fina_uids"` // 交易所财务UID列表
 }
 
 type Template struct {
@@ -27,6 +28,7 @@ type Template struct {
 	RadarOTCReport                 Report `yaml:"radar_otc_report"`
 	RadarMerchantSummaryLine       string `yaml:"radar_merchant_summary_line"`
 	RadarOTCNotice                 Report `yaml:"radar_otc_notice"`
+	ExchangeLockedTokensReport     Report `yaml:"exchange_locked_tokens_report"`
 }
 
 type Report struct {

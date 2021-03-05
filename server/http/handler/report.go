@@ -19,6 +19,8 @@ func DoReport(c *gin.Context) {
 		err = service.RadarOTCReport()
 	case "radar_notice":
 		err = service.RadarOTCNotice()
+	case "exchange_locked_tokens":
+		err = service.ExchangeLockedTokensReport(true)
 	default:
 		respond.Error(c, http.StatusBadRequest, http.StatusBadRequest, "report not found")
 		return

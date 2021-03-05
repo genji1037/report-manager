@@ -139,3 +139,38 @@ func MakeRadarOTCNotice() (string, error) {
 	}
 	return realNameCollector.Render(template), nil
 }
+
+func MakeExchangeLockedTokensReport() (string, error) {
+	logger.Infof("[report] ExchangeLockedTokensReport begin")
+	defer logger.Infof("[report] ExchangeLockedTokensReport done")
+	template := config.GetServer().Template.ExchangeLockedTokensReport.Content
+
+	finaUIDs := config.GetServer().ExchangeFinaUIDs
+	collectors := []collector.Collector{
+		&collector.OTCFrozenAmount{
+			RenderKey: "otc_frozen_amount_fina",
+			Include:   finaUIDs,
+		},
+		&collector.OTCFrozenAmount{
+			RenderKey: "otc_frozen_amount_user",
+			Exclude:   finaUIDs,
+		},
+		&collector.CTCFrozenAmount{
+			RenderKey: "ctc_frozen_amount_fina",
+			Include:   finaUIDs,
+		},
+		&collector.CTCFrozenAmount{
+			RenderKey: "ctc_frozen_amount_user",
+			Exclude:   finaUIDs,
+		},
+	}
+
+	// collect
+	collector.Collect(collectors)
+
+	// render
+	for i := range collectors {
+		template = collectors[i].Render(template)
+	}
+	return template, nil
+}

@@ -24,6 +24,7 @@ func StartCronJob() {
 	mustAddFunc(c, "@every 30m", withErr(service.RadarOTCNotice))
 	mustAddFunc(c, "0 0 0 * * *", withErr(service.PersistsOTCLockedTokens))
 	mustAddFunc(c, "0 0 0 * * *", withErr(service.PersistsCTCLockedTokens))
+	mustAddFunc(c, "0 0 0 * * *", withErr(func() error { return service.ExchangeLockedTokensReport(false) }))
 
 	logger.Infof("[cron] started")
 	c.Run()

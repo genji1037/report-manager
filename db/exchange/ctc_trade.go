@@ -1,6 +1,7 @@
 package exchange
 
 import (
+	"report-manager/alg"
 	"report-manager/model"
 	"time"
 )
@@ -32,7 +33,14 @@ group by
 	return rs, err
 }
 
-func (CTCTrade) SumFrozenAmount() ([]model.CTCFrozen, error) {
+func (CTCTrade) SumFrozenAmount(includeUIDs, excludeUIDs []string) ([]model.CTCFrozen, error) {
+	var inStmt string
+	if len(includeUIDs) > 0 {
+		inStmt = " AND uid in " + alg.SQLIn(includeUIDs)
+	} else if len(excludeUIDs) > 0 {
+		inStmt = " AND uid not in " + alg.SQLIn(excludeUIDs)
+	}
+
 	result := make([]model.CTCFrozen, 0)
 	sql := `
 SELECT 
@@ -40,7 +48,7 @@ SELECT
 FROM
     ctc_orders
 WHERE
-    state = 'wait' AND is_robot = 0
+    state = 'wait' AND is_robot = 0 ` + inStmt + `
 GROUP BY token`
 	err := gormDb.Raw(sql).Scan(&result).Error
 	return result, err

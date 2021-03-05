@@ -1,10 +1,22 @@
 package exchange
 
-import "report-manager/model"
+import (
+	"report-manager/alg"
+	"report-manager/model"
+)
 
 type OrderTrade struct{}
 
-func (OrderTrade) SumFrozenAmount() ([]model.Frozen, error) {
+func (OrderTrade) SumFrozenAmount(includeUIDs, excludeUIDs []string) ([]model.Frozen, error) {
+	var orderInStmt, tradeInStmt string
+	if len(includeUIDs) > 0 {
+		orderInStmt = " AND open_id in " + alg.SQLIn(includeUIDs)
+		tradeInStmt = " AND seller_id in " + alg.SQLIn(includeUIDs)
+	} else if len(excludeUIDs) > 0 {
+		orderInStmt = " AND open_id not in " + alg.SQLIn(excludeUIDs)
+		tradeInStmt = " AND seller_id not in " + alg.SQLIn(excludeUIDs)
+	}
+
 	result := make([]model.Frozen, 0)
 	sql := `
 SELECT 
@@ -15,13 +27,13 @@ FROM
     FROM
         orders
     WHERE
-        ` + "`type`" + ` = 2 AND ` + "`status`" + ` IN (2 , 3)
+        ` + "`type`" + ` = 2 AND ` + "`status`" + ` IN (2 , 3) ` + orderInStmt + `
     GROUP BY market_id UNION ALL SELECT 
         market_id, SUM(volume) AS frozen_amount
     FROM
         trades
     WHERE
-	` + "`type`" + ` = 2 AND state IN (3 , 4)
+	` + "`type`" + ` = 2 AND state IN (3 , 4) ` + tradeInStmt + `
     GROUP BY market_id) summary
 GROUP BY market_id
 `

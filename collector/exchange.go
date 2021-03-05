@@ -247,11 +247,14 @@ func (l *LatestPrice) Render(ori string) string {
 }
 
 type OTCFrozenAmount struct {
-	Data []model.OTCFrozen
+	Data      []model.OTCFrozen
+	Include   []string
+	Exclude   []string
+	RenderKey string
 }
 
 func (o *OTCFrozenAmount) Collect() error {
-	summarizedByMarket, err := exchange.OrderTrade{}.SumFrozenAmount()
+	summarizedByMarket, err := exchange.OrderTrade{}.SumFrozenAmount(o.Include, o.Exclude)
 	if err != nil {
 		return fmt.Errorf("exchange.OrderTrade{}.SumFrozenAmount() failed: %v", err)
 	}
@@ -301,17 +304,25 @@ func (o OTCFrozenAmount) Render(ori string) string {
 		}))
 	}
 
+	renderKey := "otc_frozen_amount"
+	if o.RenderKey != "" {
+		renderKey = o.RenderKey
+	}
+
 	return render(ori, map[string]string{
-		"otc_frozen_amount": strings.Join(lineArr, ""),
+		renderKey: strings.Join(lineArr, ""),
 	})
 }
 
 type CTCFrozenAmount struct {
-	Data []model.CTCFrozen
+	Data      []model.CTCFrozen
+	Include   []string
+	Exclude   []string
+	RenderKey string
 }
 
 func (o *CTCFrozenAmount) Collect() error {
-	frozenArray, err := exchange.CTCTrade{}.SumFrozenAmount()
+	frozenArray, err := exchange.CTCTrade{}.SumFrozenAmount(o.Include, o.Exclude)
 	if err != nil {
 		return fmt.Errorf("exchange.CTCTrade{}.SumFrozenAmount() failed: %v", err)
 	}
@@ -329,7 +340,12 @@ func (o CTCFrozenAmount) Render(ori string) string {
 		}))
 	}
 
+	renderKey := "ctc_frozen_amount"
+	if o.RenderKey != "" {
+		renderKey = o.RenderKey
+	}
+
 	return render(ori, map[string]string{
-		"ctc_frozen_amount": strings.Join(lineArr, ""),
+		renderKey: strings.Join(lineArr, ""),
 	})
 }
