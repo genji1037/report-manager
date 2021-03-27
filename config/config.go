@@ -11,8 +11,10 @@ type Server struct {
 	Host             string   `yaml:"host"` // 主机地址
 	Port             int      `yaml:"port"` // 端口号
 	Template         Template `yaml:"template"`
+	Database         MySQL    `yaml:"database"`
 	Proxy            Proxy    `yaml:"proxy"`
-	ExchangeFinaUIDs []string `yaml:"exchange_fina_uids"` // 交易所财务UID列表
+	ExchangeFinaUIDs []string `yaml:"exchange_fina_uids"` // 统计财务UID列表
+	WhiteUIDs        []string `yaml:"white_uids"`         // 统计白名单列表
 }
 
 type Template struct {
@@ -59,7 +61,8 @@ type Candy struct {
 }
 
 type OpenPlatform struct {
-	BaseURI string `yaml:"base_uri"`
+	BaseURI  string `yaml:"base_uri"`
+	Database MySQL  `yaml:"database"`
 }
 
 type MallDestroy struct {

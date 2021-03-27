@@ -25,6 +25,8 @@ func StartCronJob() {
 	mustAddFunc(c, "0 0 0 * * *", withErr(service.PersistsOTCLockedTokens))
 	mustAddFunc(c, "0 0 0 * * *", withErr(service.PersistsCTCLockedTokens))
 	mustAddFunc(c, "0 0 0 * * *", withErr(func() error { return service.ExchangeLockedTokensReport(false) }))
+	mustAddFunc(c, "0 10 0 * * *", withErr(service.CountSIESugar))
+	mustAddFunc(c, "0 0 0 * * *", withErr(service.CountSIENOneBuy))
 
 	logger.Infof("[cron] started")
 	c.Run()

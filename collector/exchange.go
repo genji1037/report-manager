@@ -247,7 +247,7 @@ func (l *LatestPrice) Render(ori string) string {
 }
 
 type OTCFrozenAmount struct {
-	Data      []model.OTCFrozen
+	Data      []model.Frozen
 	Include   []string
 	Exclude   []string
 	RenderKey string
@@ -259,7 +259,7 @@ func (o *OTCFrozenAmount) Collect() error {
 		return fmt.Errorf("exchange.OrderTrade{}.SumFrozenAmount() failed: %v", err)
 	}
 	// re-summary by token
-	summarizedByToken := make([]model.OTCFrozen, 0, len(summarizedByMarket))
+	summarizedByToken := make([]model.Frozen, 0, len(summarizedByMarket))
 	summarizedByTokenMapper := make(map[string]decimal.Decimal)
 	getTokenFromMarket := func(market string) string {
 		tmpArr := strings.Split(market, "/")
@@ -282,11 +282,9 @@ func (o *OTCFrozenAmount) Collect() error {
 
 	// convert map to array
 	for token, sum := range summarizedByTokenMapper {
-		summarizedByToken = append(summarizedByToken, model.OTCFrozen{
-			Frozen: model.Frozen{
-				Token:  token,
-				Amount: sum,
-			},
+		summarizedByToken = append(summarizedByToken, model.Frozen{
+			Token:  token,
+			Amount: sum,
 		})
 	}
 	o.Data = summarizedByToken
@@ -315,7 +313,7 @@ func (o OTCFrozenAmount) Render(ori string) string {
 }
 
 type CTCFrozenAmount struct {
-	Data      []model.CTCFrozen
+	Data      []model.Frozen
 	Include   []string
 	Exclude   []string
 	RenderKey string

@@ -28,6 +28,12 @@ func Run(host string, port int) {
 		testGroup.POST("/ctc_locked_token", handler.PersistCTCLockedToken)
 	}
 
+	internalGroup := router.Group("/internal")
+	{
+		internalGroup.POST("/wallet/balance", handler.ReceiveWalletBalance)
+		internalGroup.POST("/n_one/extra", handler.ReceiveNOneExtra)
+	}
+
 	err := router.Run(fmt.Sprintf("%s:%d", host, port))
 	if err != nil {
 		logger.Errorf("router Run failed: %s", err.Error())

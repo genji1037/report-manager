@@ -1,24 +1,21 @@
-package main
+package service
 
 import (
-	"github.com/vrecan/death"
-	_ "net/http/pprof"
+	"fmt"
 	"report-manager/config"
 	"report-manager/db"
 	"report-manager/db/exchange"
 	"report-manager/db/open"
 	"report-manager/db/radar_otc"
 	"report-manager/db/types"
-	"report-manager/job"
 	"report-manager/logger"
-	serverHttp "report-manager/server/http"
-	"syscall"
+	"testing"
 )
 
-func main() {
-	logger.CreateLoggerOnce(logger.InfoLevel, logger.DebugLevel)
+func TestMain(m *testing.M) {
+	logger.CreateLoggerOnce(logger.DebugLevel, logger.DebugLevel)
 
-	err := config.LoadConfig("config.yaml")
+	err := config.LoadConfig("../config.yaml")
 	if err != nil {
 		panic(err)
 	}
@@ -80,16 +77,13 @@ func main() {
 		logger.Panicf("Failed to open database, %v", err)
 	}
 	logger.Infof("db connected")
+	m.Run()
+}
 
-	// 开启http服务
-	go serverHttp.Run(serverCfg.Host, serverCfg.Port)
-
-	go job.StartCronJob()
-
-	// 捕捉退出信号
-	d := death.NewDeath(syscall.SIGTERM, syscall.SIGINT, syscall.SIGKILL,
-		syscall.SIGHUP, syscall.SIGQUIT, syscall.SIGALRM)
-	d.WaitForDeathWithFunc(func() {
-		logger.Infof("report-manager server stopped.")
-	})
+func TestExchangeReport(t *testing.T) {
+	content, err := MakeExchangeReport()
+	if err != nil {
+		t.Fatal(err)
+	}
+	fmt.Println(content)
 }

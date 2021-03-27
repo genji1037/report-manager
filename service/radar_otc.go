@@ -12,7 +12,7 @@ import (
 
 func RadarOTCReport() error {
 	// make a report
-	reportContent, err := report.MakeRadarOTCReport()
+	reportContent, err := MakeRadarOTCReport()
 	if err != nil {
 		return fmt.Errorf("make report failed: %s", err.Error())
 	}

@@ -4,12 +4,11 @@ import (
 	"fmt"
 	"report-manager/config"
 	"report-manager/proxy"
-	"report-manager/report"
 )
 
 func ExchangeReport() error {
 	// make a report
-	reportContent, err := report.MakeExchangeReport()
+	reportContent, err := MakeExchangeReport()
 	if err != nil {
 		return fmt.Errorf("make report failed: %s", err.Error())
 	}
@@ -29,7 +28,7 @@ func ExchangeReport() error {
 
 func ExchangeLockedTokensReport(console bool) error {
 	// make a report
-	reportContent, err := report.MakeExchangeLockedTokensReport()
+	reportContent, err := MakeExchangeLockedTokensReport()
 	if err != nil {
 		return fmt.Errorf("make report failed: %s", err.Error())
 	}

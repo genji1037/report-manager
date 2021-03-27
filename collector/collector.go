@@ -24,7 +24,6 @@ func Collect(collectors []Collector) {
 
 func CollectParallel(collectors []Collector) {
 	return
-	// fixme:
 	wg := sync.WaitGroup{}
 
 	ok := make([]chan struct{}, 0, len(collectors))

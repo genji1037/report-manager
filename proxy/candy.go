@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/shopspring/decimal"
+	"io"
 	"io/ioutil"
 	"net/http"
 	"report-manager/config"
@@ -23,6 +24,39 @@ func LatestCirculateAmount() (decimal.Decimal, error) {
 		return decimal.Zero, fmt.Errorf("unmarshal %s failed: %s", string(rsp.RawMessage), err.Error())
 	}
 	return decimal.NewFromFloat(circulateAmount.Currency), nil
+}
+
+func GetRewardFileName() (string, string, error) {
+	baseURI := config.GetServer().Proxy.Candy.BaseURI
+	rsp, err := get(baseURI+"/sugar/reward_file_name", nil)
+	if err != nil {
+		return "", "", err
+	}
+	result := struct {
+		Code int    `json:"code"`
+		Msg  string `json:"msg"`
+		Data struct {
+			Reward1Name string `json:"reward_1_name"`
+			Reward2Name string `json:"reward_2_name"`
+		} `json:"data"`
+	}{}
+	err = json.Unmarshal(rsp.RawMessage, &result)
+	if err != nil {
+		return "", "", fmt.Errorf("unmarshal %s failed: %s", string(rsp.RawMessage), err.Error())
+	}
+	if result.Code != http.StatusOK {
+		return "", "", fmt.Errorf("failed with code %d msg %s", result.Code, result.Msg)
+	}
+	return result.Data.Reward1Name, result.Data.Reward2Name, nil
+}
+
+func DownloadSugarFile(fileName string) (io.ReadCloser, error) {
+	baseURI := config.GetServer().Proxy.Candy.BaseURI
+	resp, err := http.Get(baseURI + "/sugar/download/" + fileName)
+	if err != nil {
+		return nil, err
+	}
+	return resp.Body, nil
 }
 
 // Result is receive post func return value

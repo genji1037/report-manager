@@ -4,12 +4,11 @@ import (
 	"fmt"
 	"report-manager/config"
 	"report-manager/proxy"
-	"report-manager/report"
 )
 
 func MallDestroyFailedReport() error {
 	// make a report
-	reportContent, err := report.MakeMallDestroyFailedListReport()
+	reportContent, err := MakeMallDestroyFailedListReport()
 	if err != nil {
 		return fmt.Errorf("make report failed: %s", err.Error())
 	}

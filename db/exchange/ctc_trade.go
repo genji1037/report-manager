@@ -33,7 +33,7 @@ group by
 	return rs, err
 }
 
-func (CTCTrade) SumFrozenAmount(includeUIDs, excludeUIDs []string) ([]model.CTCFrozen, error) {
+func (CTCTrade) SumFrozenAmount(includeUIDs, excludeUIDs []string) ([]model.Frozen, error) {
 	var inStmt string
 	if len(includeUIDs) > 0 {
 		inStmt = " AND uid in " + alg.SQLIn(includeUIDs)
@@ -41,7 +41,7 @@ func (CTCTrade) SumFrozenAmount(includeUIDs, excludeUIDs []string) ([]model.CTCF
 		inStmt = " AND uid not in " + alg.SQLIn(excludeUIDs)
 	}
 
-	result := make([]model.CTCFrozen, 0)
+	result := make([]model.Frozen, 0)
 	sql := `
 SELECT 
     IF(quote = 'bid', bid, ask) AS token, SUM(` + "`locked`" + `) amount

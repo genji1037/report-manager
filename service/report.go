@@ -1,10 +1,14 @@
-package report
+package service
 
 import (
 	"fmt"
+	"github.com/shopspring/decimal"
+	"report-manager/alg"
 	"report-manager/collector"
 	"report-manager/config"
 	"report-manager/logger"
+	"report-manager/model"
+	"report-manager/report"
 	"report-manager/util"
 	"time"
 )
@@ -12,7 +16,6 @@ import (
 type Report string
 
 // MakeExchangeReport make a exchange report
-// TODO implement through maker
 func MakeExchangeReport() (string, error) {
 	logger.Infof("[report] exchange report begin")
 	defer logger.Infof("[report] exchange report done")
@@ -58,7 +61,6 @@ func MakeExchangeReport() (string, error) {
 	return out, nil
 }
 
-// TODO implement through maker
 func MakeRadarOTCReport() (string, error) {
 	logger.Infof("[report] radar otc report begin")
 	defer logger.Infof("[report] radar otc report done")
@@ -94,7 +96,6 @@ func MakeRadarOTCReport() (string, error) {
 	return out, nil
 }
 
-// TODO implement through maker
 func MakeMallDestroyFailedListReport() (string, error) {
 	logger.Infof("[report] exchange report begin")
 	defer logger.Infof("[report] exchange report done")
@@ -135,40 +136,74 @@ func MakeRadarOTCNotice() (string, error) {
 	// do not notice if no waiting real names
 	if realNameCollector.Num <= 0 {
 		logger.Infof("[report] radar otc no waiting real names")
-		return template, DoNotReport
+		return template, report.DoNotReport
 	}
 	return realNameCollector.Render(template), nil
 }
 
 func MakeExchangeLockedTokensReport() (string, error) {
+	cfg := config.GetServer()
 	logger.Infof("[report] ExchangeLockedTokensReport begin")
 	defer logger.Infof("[report] ExchangeLockedTokensReport done")
 	loc := util.ShLoc()
 	today := time.Now().In(loc).Format("2006-01-02")
-	template := config.GetServer().Template.ExchangeLockedTokensReport.Content
+	template := cfg.Template.ExchangeLockedTokensReport.Content
 
-	finaUIDs := config.GetServer().ExchangeFinaUIDs
-	collectors := []collector.Collector{
-		&collector.OTCFrozenAmount{
-			RenderKey: "otc_frozen_amount_fina",
-			Include:   finaUIDs,
-		},
-		&collector.OTCFrozenAmount{
-			RenderKey: "otc_frozen_amount_user",
-			Exclude:   finaUIDs,
-		},
-		&collector.CTCFrozenAmount{
-			RenderKey: "ctc_frozen_amount_fina",
-			Include:   finaUIDs,
-		},
-		&collector.CTCFrozenAmount{
-			RenderKey: "ctc_frozen_amount_user",
-			Exclude:   finaUIDs,
-		},
+	finaUIDs := cfg.ExchangeFinaUIDs
+	c1 := &collector.OTCFrozenAmount{
+		RenderKey: "otc_frozen_amount_fina",
+		Include:   finaUIDs,
 	}
+	c2 := &collector.OTCFrozenAmount{
+		RenderKey: "otc_frozen_amount_user",
+		Exclude:   finaUIDs,
+	}
+	c3 := &collector.CTCFrozenAmount{
+		RenderKey: "ctc_frozen_amount_fina",
+		Include:   finaUIDs,
+	}
+	c4 := &collector.CTCFrozenAmount{
+		RenderKey: "ctc_frozen_amount_user",
+		Exclude:   finaUIDs,
+	}
+	collectors := []collector.Collector{c1, c2, c3, c4}
 
 	// collect
 	collector.Collect(collectors)
+
+	// persist
+	const typeFina = "fina"
+	const typeUser = "user"
+	sieCount := SIECountExchange{SIERawData: make([]SIECountRawData, 0)}
+	userRepresent := "un_exists_uid"
+	finaRepresent := userRepresent // if not finas configured, aggregate as user.
+	if len(config.GetServer().ExchangeFinaUIDs) > 0 {
+		finaRepresent = config.GetServer().ExchangeFinaUIDs[0]
+	}
+	injectRawData := func(typ, token string, amount decimal.Decimal) {
+		record := SIECountRawData{
+			Token:  token,
+			Amount: amount,
+		}
+		switch typ {
+		case typeFina:
+			record.UID = finaRepresent
+		default: // user
+			record.UID = userRepresent
+		}
+		sieCount.SIERawData = append(sieCount.SIERawData, record)
+	}
+	batchInjectData := func(typ string, datas []model.Frozen) {
+		for _, data := range datas {
+			injectRawData(typ, data.Token, data.Amount)
+		}
+	}
+	batchInjectData(typeFina, c1.Data)
+	batchInjectData(typeUser, c2.Data)
+	batchInjectData(typeFina, c3.Data)
+	batchInjectData(typeUser, c4.Data)
+
+	go CountSIE(sieCount, alg.NowDate(), cfg)
 
 	// render
 	collectors = append(collectors, collector.NewStringRender("report_date", today))

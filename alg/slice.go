@@ -20,3 +20,7 @@ func StrArr2Str(strs []string, wrap, sep string) string {
 	}
 	return result.String()
 }
+
+func Merge() {
+
+}

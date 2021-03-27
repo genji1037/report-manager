@@ -66,11 +66,3 @@ type UserFrozen struct {
 	Amount decimal.Decimal `json:"amount"` // 冻结金额
 	Token  string          `json:"token"`  // 币种
 }
-
-type OTCFrozen struct {
-	Frozen
-}
-
-type CTCFrozen struct {
-	Frozen
-}
