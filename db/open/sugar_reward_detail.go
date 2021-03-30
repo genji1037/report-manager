@@ -14,5 +14,5 @@ func (RewardDetail) TableName() string {
 }
 
 func (r *RewardDetail) Last() error {
-	return gormDb.Model(r).Debug().Last(r).Error
+	return gormDb.Model(r).Last(r).Error
 }
