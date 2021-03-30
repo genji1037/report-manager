@@ -5,6 +5,7 @@ import (
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/mysql"
 	"report-manager/db/types"
+	"time"
 )
 
 var gormDb *gorm.DB
@@ -25,6 +26,7 @@ func Open(conn types.Connection) error {
 
 	gormDb.DB().SetMaxIdleConns(conn.MaxIdleConns)
 	gormDb.DB().SetMaxOpenConns(conn.MaxOpenConns)
+	gormDb.DB().SetConnMaxLifetime(7 * time.Hour)
 
 	return nil
 }
