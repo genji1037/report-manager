@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"report-manager/config"
 	"report-manager/proxy"
+	"report-manager/util"
+	"time"
 )
 
 func ExchangeReport() error {
@@ -27,8 +29,12 @@ func ExchangeReport() error {
 }
 
 func ExchangeLockedTokensReport(console bool) error {
+	loc := util.ShLoc()
+	// trigger at 11:50 p.m.
+	today := time.Now().In(loc).Add(-2 * CountBoundOffset).Format("2006-01-02")
+
 	// make a report
-	reportContent, err := MakeExchangeLockedTokensReport()
+	reportContent, err := MakeExchangeLockedTokensReport(today)
 	if err != nil {
 		return fmt.Errorf("make report failed: %s", err.Error())
 	}

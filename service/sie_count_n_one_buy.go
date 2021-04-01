@@ -24,6 +24,7 @@ func (s SIECountNOneBuy) RawData(date string) ([]SIECountRawData, error) {
 	if err != nil {
 		return nil, fmt.Errorf("bad date: %v", err)
 	}
+	endTime = endTime.Add(CountBoundOffset)
 	beginTime := endTime.Add(-24 * time.Hour)
 
 	payment := open.ThirdPayment{CreateTime: beginTime}

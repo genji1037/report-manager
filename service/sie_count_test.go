@@ -13,3 +13,9 @@ func TestCountSIENOneBuy(t *testing.T) {
 		t.Fatalf(err.Error())
 	}
 }
+
+func TestCountShopDestroy(t *testing.T) {
+	if err := CountShopDestroy(); err != nil {
+		t.Fatalf(err.Error())
+	}
+}

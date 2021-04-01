@@ -10,12 +10,19 @@ import (
 	"time"
 )
 
+// 统计时间边界为11:50 p.m.
+var CountBoundOffset = -10 * time.Minute
+
 func CountSIESugar() error {
 	return CountSIEDefault(SIECountSugar{}, alg.NowDate())
 }
 
 func CountSIENOneBuy() error {
 	return CountSIEDefault(SIECountNOneBuy{}, alg.NowDate())
+}
+
+func CountShopDestroy() error {
+	return CountSIEDefault(SIECountShopDestroy{}, alg.NowDate())
 }
 
 func CountSIEDefault(sieCount SIECount, date string) error {

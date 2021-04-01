@@ -8,6 +8,7 @@ const (
 	SieCountExchange      = "exchange"
 	SieCountNOneBuy       = "nOneBuy"
 	SieCountNOneIssuer    = "nOneIssuer"
+	SieCountShopDestroy   = "shopDestroy"
 )
 
 type SieCount struct {

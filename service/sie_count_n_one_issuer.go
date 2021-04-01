@@ -27,11 +27,12 @@ func (s SIECountNOneIssuer) Prepared(date string) bool {
 }
 
 func (s SIECountNOneIssuer) RawData(date string) ([]SIECountRawData, error) {
-	beginTime, err := alg.NewShTime(date)
+	endTime, err := alg.NewShTime(date)
 	if err != nil {
 		return nil, fmt.Errorf("bad date: %v", err)
 	}
-	endTime := beginTime.Add(24 * time.Hour)
+	endTime = endTime.Add(CountBoundOffset)
+	beginTime := endTime.Add(-24 * time.Hour)
 
 	payment := open.ThirdPayment{CreateTime: beginTime}
 	err = payment.GetByCreatedAt()

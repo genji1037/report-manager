@@ -3,7 +3,6 @@ package service
 import (
 	"fmt"
 	"github.com/shopspring/decimal"
-	"report-manager/alg"
 	"report-manager/collector"
 	"report-manager/config"
 	"report-manager/logger"
@@ -141,12 +140,10 @@ func MakeRadarOTCNotice() (string, error) {
 	return realNameCollector.Render(template), nil
 }
 
-func MakeExchangeLockedTokensReport() (string, error) {
+func MakeExchangeLockedTokensReport(date string) (string, error) {
 	cfg := config.GetServer()
 	logger.Infof("[report] ExchangeLockedTokensReport begin")
 	defer logger.Infof("[report] ExchangeLockedTokensReport done")
-	loc := util.ShLoc()
-	today := time.Now().In(loc).Format("2006-01-02")
 	template := cfg.Template.ExchangeLockedTokensReport.Content
 
 	finaUIDs := cfg.ExchangeFinaUIDs
@@ -203,10 +200,10 @@ func MakeExchangeLockedTokensReport() (string, error) {
 	batchInjectData(typeFina, c3.Data)
 	batchInjectData(typeUser, c4.Data)
 
-	go CountSIE(sieCount, alg.NowDate(), cfg)
+	go CountSIE(sieCount, date, cfg)
 
 	// render
-	collectors = append(collectors, collector.NewStringRender("report_date", today))
+	collectors = append(collectors, collector.NewStringRender("report_date", date))
 	for i := range collectors {
 		template = collectors[i].Render(template)
 	}
