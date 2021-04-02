@@ -26,6 +26,7 @@ func Run(host string, port int) {
 	{
 		testGroup.POST("/otc_locked_token", handler.PersistOTCLockedToken)
 		testGroup.POST("/ctc_locked_token", handler.PersistCTCLockedToken)
+		// curl -XPOST http://localhost:18096/test/sie_count/sugar -H 'Password:ba9b89sbs9yys9bys9bd8'
 		testGroup.POST("/sie_count/sugar", handler.SIECountSugar)
 		testGroup.POST("/sie_count/n_one_buy", handler.SIECountNOneBuy)
 		testGroup.POST("/sie_count/shop_destroy", handler.SIECountShopDestroy)

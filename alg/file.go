@@ -8,7 +8,7 @@ import (
 )
 
 func WriteTemp(rd io.Reader, filename string) (*os.File, error) {
-	dir := os.TempDir()
+	dir := "./tmp"
 	err := os.MkdirAll(dir, 0644)
 	if err != nil {
 		return nil, fmt.Errorf("mkdir failed: %v", err)
