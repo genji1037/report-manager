@@ -8,12 +8,12 @@ import (
 )
 
 func WriteTemp(rd io.Reader, filename string) (*os.File, error) {
-	dir := "./tmp"
+	dir := os.TempDir()
 	err := os.MkdirAll(dir, 0644)
 	if err != nil {
 		return nil, fmt.Errorf("mkdir failed: %v", err)
 	}
-	path := dir + filename
+	path := dir + "/" + filename
 	logger.Infof("start write tmp file %s", path)
 	defer logger.Infof("finish write tmp file %s", path)
 	f, err := os.Create(path)
