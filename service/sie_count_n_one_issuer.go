@@ -6,6 +6,7 @@ import (
 	"report-manager/alg"
 	"report-manager/db"
 	"report-manager/db/open"
+	"report-manager/logger"
 	"time"
 )
 
@@ -49,10 +50,14 @@ func (s SIECountNOneIssuer) RawData(date string) ([]SIECountRawData, error) {
 	}
 	end := payment.ID
 
+	logger.Infof("start get n_one reward from %d to %d", begin, end)
+	t0 := time.Now()
 	rewards, err := open.ThirdPayment{}.GetNOneReward(begin, end)
 	if err != nil {
 		return nil, fmt.Errorf("get n-one buys failed: %v", err)
 	}
+
+	logger.Infof("get n_one reward cost %s", time.Now().Sub(t0))
 
 	result := make([]SIECountRawData, 0, len(rewards))
 	for _, reward := range rewards {

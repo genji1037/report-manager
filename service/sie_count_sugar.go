@@ -108,10 +108,10 @@ func solveSIESugarRewardFile(reader *os.File) ([]SIECountRawData, error) {
 	defer logger.Infof("sieCount solve reward file ok")
 	// unzip first
 	rd, err := alg.Unzip(reader)
-	defer rd.Close()
 	if err != nil {
 		return nil, fmt.Errorf("unzip failed: %v", err)
 	}
+	defer rd.Close()
 
 	result := make([]SIECountRawData, 0)
 	r := bufio.NewReader(rd)
