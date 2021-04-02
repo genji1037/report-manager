@@ -24,3 +24,9 @@ type SieCount struct {
 func (s *SieCount) Create() error {
 	return gormDb.Model(s).Create(s).Error
 }
+
+func (s *SieCount) Query() ([]SieCount, error) {
+	result := make([]SieCount, 0)
+	err := gormDb.Model(s).Where(s).Scan(&result).Error
+	return result, err
+}

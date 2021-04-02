@@ -70,7 +70,7 @@ func checkSIESugarDone(date string) bool {
 // 下载SIE糖果奖励文件
 func downLoadSIESugarRewardFile(date string) (*os.File, *os.File, error) {
 	logger.Infof("sieCount begin get reward file name")
-	reward1Name, reward2Name, err := proxy.GetRewardFileName()
+	reward1Name, reward2Name, err := proxy.GetRewardFileName(date)
 	if err != nil {
 		return nil, nil, fmt.Errorf("proxy.GetRewardFileName failed: %v", err)
 	}

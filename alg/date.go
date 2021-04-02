@@ -9,7 +9,11 @@ func init() {
 }
 
 func NowDate() string {
-	return time.Now().Format("2006-01-02")
+	return time.Now().In(shLoc).Format("2006-01-02")
+}
+
+func YesterdayDate() string {
+	return time.Now().Add(-24 * time.Hour).In(shLoc).Format("2006-01-02")
 }
 
 func NewShTime(date string) (time.Time, error) {

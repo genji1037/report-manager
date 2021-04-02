@@ -11,7 +11,7 @@ import (
 )
 
 func LatestCirculateAmount() (decimal.Decimal, error) {
-	baseURI := config.GetServer().Proxy.Candy.BaseURI
+	baseURI := config.GetServer().Proxy.OpenPlatform.BaseURI
 	rsp, err := get(baseURI+"/manager/exchange/currency", nil)
 	if err != nil {
 		return decimal.Zero, err
@@ -26,9 +26,9 @@ func LatestCirculateAmount() (decimal.Decimal, error) {
 	return decimal.NewFromFloat(circulateAmount.Currency), nil
 }
 
-func GetRewardFileName() (string, string, error) {
+func GetRewardFileName(date string) (string, string, error) {
 	baseURI := config.GetServer().Proxy.Candy.BaseURI
-	rsp, err := get(baseURI+"/sugar/reward_file_name", nil)
+	rsp, err := get(baseURI+"/sugar/reward_file_name?date="+date, nil)
 	if err != nil {
 		return "", "", err
 	}

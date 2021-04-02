@@ -14,15 +14,15 @@ import (
 var CountBoundOffset = -10 * time.Minute
 
 func CountSIESugar() error {
-	return CountSIEDefault(SIECountSugar{}, alg.NowDate())
+	return CountSIEDefault(SIECountSugar{}, alg.YesterdayDate())
 }
 
 func CountSIENOneBuy() error {
-	return CountSIEDefault(SIECountNOneBuy{}, alg.NowDate())
+	return CountSIEDefault(SIECountNOneBuy{}, alg.YesterdayDate())
 }
 
 func CountShopDestroy() error {
-	return CountSIEDefault(SIECountShopDestroy{}, alg.NowDate())
+	return CountSIEDefault(SIECountShopDestroy{}, alg.YesterdayDate())
 }
 
 func CountSIEDefault(sieCount SIECount, date string) error {
@@ -53,13 +53,16 @@ type aggregationVal struct {
 }
 
 func countSIE(sieCount SIECount, date string, finas, whites *alg.StrMap) error {
+	logger.Infof("start count SIE for %s at %s", sieCount.Type(), date)
+	defer logger.Infof("end count SIE for %s at %s", sieCount.Type(), date)
+
 	delay := time.Minute
 	maxRetry := int(2 * time.Hour / delay)
 	retry := 0
 	for !sieCount.Prepared(date) {
 		retry++
-		if date != alg.NowDate() { // abort
-			return fmt.Errorf("request date is not today")
+		if date != alg.YesterdayDate() { // abort
+			return fmt.Errorf("request date is not yesterday")
 		}
 		logger.Infof("CountSIE %s not ready, wait a minute", sieCount.Type())
 		if retry >= maxRetry {

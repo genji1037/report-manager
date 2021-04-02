@@ -3,6 +3,7 @@ package service
 import (
 	"fmt"
 	"github.com/shopspring/decimal"
+	"report-manager/alg"
 	"report-manager/collector"
 	"report-manager/config"
 	"report-manager/logger"
@@ -200,7 +201,9 @@ func MakeExchangeLockedTokensReport(date string) (string, error) {
 	batchInjectData(typeFina, c3.Data)
 	batchInjectData(typeUser, c4.Data)
 
-	go CountSIE(sieCount, date, cfg)
+	tmp, _ := alg.NewShTime(date)
+	yesterdayDate := tmp.Add(-24 * time.Hour).Format("2006-01-02")
+	go CountSIE(sieCount, yesterdayDate, cfg)
 
 	// render
 	collectors = append(collectors, collector.NewStringRender("report_date", date))
