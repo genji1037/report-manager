@@ -4,9 +4,11 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/shopspring/decimal"
 	"net/http"
+	"report-manager/alg"
 	"report-manager/db"
 	"report-manager/logger"
 	"report-manager/server/http/respond"
+	"time"
 )
 
 type WalletBalance struct {
@@ -26,13 +28,20 @@ func ReceiveWalletBalance(c *gin.Context) {
 		respond.Error(c, http.StatusBadRequest, http.StatusBadRequest, err.Error())
 		return
 	}
+	// 钱包传的日期是当天的，需要加一天和其他保持一样
+	tmp, err := alg.NewShTime(req.Date)
+	if err != nil {
+		respond.Error(c, http.StatusBadRequest, http.StatusBadRequest, "invalid date")
+		return
+	}
+	date := tmp.Add(24 * time.Hour).Format("2006-01-02")
 	m := make(map[string]db.SieCount)
 	for _, data := range req.WalletBalances {
 		token := data.Token
 		sieCount, ok := m[token]
 		if !ok {
 			sieCount = db.SieCount{
-				Dat:         req.Date,
+				Dat:         date,
 				Token:       token,
 				Typ:         db.SieCountTypeWallet,
 				FinaAmount:  decimal.Decimal{},

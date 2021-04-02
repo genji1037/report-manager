@@ -21,7 +21,7 @@ func (ThirdPayment) TableName() string {
 }
 
 func (t *ThirdPayment) GetByCreatedAt() error {
-	err := gormDb.Model(t).Where("create_time < ?", t.CreateTime).Last(t).Error
+	err := gormDb.Model(t).Where("create_time < ?", t.CreateTime).Debug().Last(t).Error
 	if err == gorm.ErrRecordNotFound {
 		return nil
 	}
