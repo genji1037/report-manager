@@ -27,7 +27,7 @@ func (s SIECountSugar) Prepared(date string) bool {
 }
 
 func (s SIECountSugar) RawData(date string) ([]SIECountRawData, error) {
-	reward1, reward2, err := downLoadSIESugarRewardFile(date)
+	reward1, reward2, err := downLoadSIESugarRewardFile()
 	if err != nil {
 		return nil, fmt.Errorf("downLoadSIESugarRewardFile failed: %v", err)
 	}
@@ -68,9 +68,9 @@ func checkSIESugarDone(date string) bool {
 }
 
 // 下载SIE糖果奖励文件
-func downLoadSIESugarRewardFile(date string) (*os.File, *os.File, error) {
+func downLoadSIESugarRewardFile() (*os.File, *os.File, error) {
 	logger.Infof("sieCount begin get reward file name")
-	reward1Name, reward2Name, err := proxy.GetRewardFileName(date)
+	reward1Name, reward2Name, err := proxy.GetRewardFileName()
 	if err != nil {
 		return nil, nil, fmt.Errorf("proxy.GetRewardFileName failed: %v", err)
 	}

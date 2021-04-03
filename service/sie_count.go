@@ -14,15 +14,15 @@ import (
 var CountBoundOffset = -10 * time.Minute
 
 func CountSIESugar() error {
-	return CountSIEDefault(SIECountSugar{}, alg.YesterdayDate())
+	return CountSIEDefault(SIECountSugar{}, alg.NowDate())
 }
 
 func CountSIENOneBuy() error {
-	return CountSIEDefault(SIECountNOneBuy{}, alg.YesterdayDate())
+	return CountSIEDefault(SIECountNOneBuy{}, alg.NowDate())
 }
 
 func CountShopDestroy() error {
-	return CountSIEDefault(SIECountShopDestroy{}, alg.YesterdayDate())
+	return CountSIEDefault(SIECountShopDestroy{}, alg.NowDate())
 }
 
 func CountSIEDefault(sieCount SIECount, date string) error {
@@ -61,7 +61,7 @@ func countSIE(sieCount SIECount, date string, finas, whites *alg.StrMap) error {
 	retry := 0
 	for !sieCount.Prepared(date) {
 		retry++
-		if date != alg.YesterdayDate() { // abort
+		if date != alg.NowDate() { // abort
 			return fmt.Errorf("request date is not yesterday")
 		}
 		logger.Infof("CountSIE %s not ready, wait a minute", sieCount.Type())
