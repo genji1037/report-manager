@@ -96,8 +96,8 @@ func MakeRadarOTCReport() (string, error) {
 }
 
 func MakeMallDestroyFailedListReport() (string, error) {
-	logger.Infof("[report] exchange report begin")
-	defer logger.Infof("[report] exchange report done")
+	logger.Infof("[report] malldes report begin")
+	defer logger.Infof("[report] malldes report done")
 
 	loc := util.ShLoc()
 	today := time.Now().In(loc).Format("2006-01-02")
