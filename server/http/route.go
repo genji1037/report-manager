@@ -43,6 +43,14 @@ func Run(host string, port int) {
 		adminGroup.GET("/count", handler.GetSIECount)
 	}
 
+	reportAdminGroup := router.Group("/rep_admin")
+	{
+		reportAdminGroup.POST("/special_user/create", handler.CreateSpecialUser)
+		reportAdminGroup.POST("/special_user/delete", handler.DeleteSpecialUser)
+		reportAdminGroup.POST("/special_user/update", handler.UpdateSpecialUser)
+		reportAdminGroup.GET("/special_users", handler.ListSpecialUsers)
+	}
+
 	err := router.Run(fmt.Sprintf("%s:%d", host, port))
 	if err != nil {
 		logger.Errorf("router Run failed: %s", err.Error())

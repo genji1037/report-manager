@@ -313,18 +313,25 @@ func (o OTCFrozenAmount) Render(ori string) string {
 }
 
 type CTCFrozenAmount struct {
-	Data      []model.Frozen
-	Include   []string
-	Exclude   []string
-	RenderKey string
+	Data       []model.Frozen
+	UserFrozen []model.UserFrozen
+	GroupByUID bool
+	Include    []string
+	Exclude    []string
+	RenderKey  string
 }
 
 func (o *CTCFrozenAmount) Collect() error {
-	frozenArray, err := exchange.CTCTrade{}.SumFrozenAmount(o.Include, o.Exclude)
-	if err != nil {
-		return fmt.Errorf("exchange.CTCTrade{}.SumFrozenAmount() failed: %v", err)
+	var err error
+	if o.GroupByUID {
+		o.UserFrozen, err = exchange.CTCTrade{}.SumFrozenAmountGroupByUID(o.Include, o.Exclude)
+		o.Data = model.Frozen{}.FromUserFrozen(o.UserFrozen)
+	} else {
+		o.Data, err = exchange.CTCTrade{}.SumFrozenAmount(o.Include, o.Exclude)
 	}
-	o.Data = frozenArray
+	if err != nil {
+		return fmt.Errorf("SumFrozenAmount[GroupByUID] failed: %v", err)
+	}
 	return nil
 }
 

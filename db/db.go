@@ -18,6 +18,8 @@ type Table interface {
 
 var tables = []Table{
 	new(SieCount),
+	new(ExchangeSpecialUser),
+	new(ExchangeSpecialUserReport),
 }
 
 // 打开数据库

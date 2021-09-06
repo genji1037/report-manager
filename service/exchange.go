@@ -30,7 +30,7 @@ func ExchangeReport() error {
 
 func ExchangeLockedTokensReport(console bool) error {
 	loc := util.ShLoc()
-	// trigger at 11:50 p.m.
+	// trigger at 11:30 p.m.
 	today := time.Now().In(loc).Add(-2 * CountBoundOffset).Format("2006-01-02")
 
 	// make a report

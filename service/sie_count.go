@@ -10,8 +10,8 @@ import (
 	"time"
 )
 
-// 统计时间边界为11:50 p.m.
-var CountBoundOffset = -10 * time.Minute
+// 统计时间边界为11:30 p.m.
+var CountBoundOffset = -30 * time.Minute
 
 func CountSIESugar() error {
 	return CountSIEDefault(SIECountSugar{}, alg.NowDate())

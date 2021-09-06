@@ -34,6 +34,20 @@ group by
 }
 
 func (CTCTrade) SumFrozenAmount(includeUIDs, excludeUIDs []string) ([]model.Frozen, error) {
+	result := make([]model.Frozen, 0)
+	sql := genSumFrozenAmountSQL(includeUIDs, excludeUIDs, false)
+	err := gormDb.Raw(sql).Scan(&result).Error
+	return result, err
+}
+
+func (CTCTrade) SumFrozenAmountGroupByUID(includeUIDs, excludeUIDs []string) ([]model.UserFrozen, error) {
+	result := make([]model.UserFrozen, 0)
+	sql := genSumFrozenAmountSQL(includeUIDs, excludeUIDs, true)
+	err := gormDb.Raw(sql).Scan(&result).Error
+	return result, err
+}
+
+func genSumFrozenAmountSQL(includeUIDs, excludeUIDs []string, groupByUID bool) string {
 	var inStmt string
 	if len(includeUIDs) > 0 {
 		inStmt = " AND uid in " + alg.SQLIn(includeUIDs)
@@ -41,21 +55,25 @@ func (CTCTrade) SumFrozenAmount(includeUIDs, excludeUIDs []string) ([]model.Froz
 		inStmt = " AND uid not in " + alg.SQLIn(excludeUIDs)
 	}
 
-	result := make([]model.Frozen, 0)
+	var maybeUIDAndComma string
+	if groupByUID {
+		maybeUIDAndComma = "uid,"
+	}
+
 	sql := `
 SELECT 
-    IF(quote = 'bid', bid, ask) AS token, SUM(` + "`locked`" + `) amount
+    ` + maybeUIDAndComma + `IF(quote = 'bid', bid, ask) AS token, SUM(` + "`locked`" + `) amount
 FROM
     ctc_orders
 WHERE
     state = 'wait' AND is_robot = 0 ` + inStmt + `
-GROUP BY token`
-	err := gormDb.Raw(sql).Scan(&result).Error
-	return result, err
+GROUP BY ` + maybeUIDAndComma + `token`
+
+	return sql
 }
 
-func (CTCTrade) SumFrozenAmountByUID() ([]model.UserFrozen, error) {
-	result := make([]model.UserFrozen, 0)
+func (CTCTrade) SumFrozenAmountByUID() ([]model.UserTokenAmount, error) {
+	result := make([]model.UserTokenAmount, 0)
 	sql := `
 SELECT 
     IF(quote = 'bid', bid, ask) AS token, SUM(` + "`locked`" + `) amount, uid

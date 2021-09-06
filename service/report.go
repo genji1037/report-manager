@@ -3,8 +3,11 @@ package service
 import (
 	"fmt"
 	"github.com/shopspring/decimal"
+	"report-manager/alg"
 	"report-manager/collector"
 	"report-manager/config"
+	"report-manager/db"
+	"report-manager/db/open"
 	"report-manager/logger"
 	"report-manager/model"
 	"report-manager/report"
@@ -146,7 +149,15 @@ func MakeExchangeLockedTokensReport(date string) (string, error) {
 	defer logger.Infof("[report] ExchangeLockedTokensReport done")
 	template := cfg.Template.ExchangeLockedTokensReport.Content
 
-	finaUIDs := cfg.ExchangeFinaUIDs
+	finas, err := db.ExchangeSpecialUser{}.List(db.ExchangeSpecialUserRoleFina)
+	if err != nil {
+		return "", fmt.Errorf("list finas failed: %v", err)
+	}
+	finaUIDs := make([]string, len(finas))
+	for i, fina := range finas {
+		finaUIDs[i] = fina.UID
+	}
+
 	c1 := &collector.OTCFrozenAmount{
 		RenderKey: "otc_frozen_amount_fina",
 		Include:   finaUIDs,
@@ -156,8 +167,9 @@ func MakeExchangeLockedTokensReport(date string) (string, error) {
 		Exclude:   finaUIDs,
 	}
 	c3 := &collector.CTCFrozenAmount{
-		RenderKey: "ctc_frozen_amount_fina",
-		Include:   finaUIDs,
+		RenderKey:  "ctc_frozen_amount_fina",
+		Include:    finaUIDs,
+		GroupByUID: true,
 	}
 	c4 := &collector.CTCFrozenAmount{
 		RenderKey: "ctc_frozen_amount_user",
@@ -167,6 +179,67 @@ func MakeExchangeLockedTokensReport(date string) (string, error) {
 
 	// collect
 	collector.Collect(collectors)
+
+	// user report
+	go func() {
+		t, err := alg.ParseSHDate(date)
+		if err != nil {
+			logger.Errorf("MakeExchangeLockedTokensReport user report ParseSHDate failed: %v", err)
+			return
+		}
+		end := t.Add(-30 * time.Minute)
+		begin := end.Add(-24 * time.Hour)
+		summaries, err := open.ThirdPayment{}.Summary(begin, end, "3d61a0411511d3b1", finaUIDs)
+		if err != nil {
+			logger.Errorf("MakeExchangeLockedTokensReport Summary third payment failed: %v", err)
+			return
+		}
+
+		type key struct {
+			UID   string
+			Token string
+		}
+		getKey := func(uid, token string) key {
+			return key{uid, token}
+		}
+		newReport := func(uid, token, date string) db.ExchangeSpecialUserReport {
+			return db.ExchangeSpecialUserReport{UID: uid, Token: token, Dat: date}
+		}
+		userReportsMap := make(map[key]db.ExchangeSpecialUserReport)
+
+		for _, uf := range c3.UserFrozen {
+			k := getKey(uf.UID, uf.Token)
+			rep, ok := userReportsMap[k]
+			if !ok {
+				rep = newReport(uf.UID, uf.Token, date)
+			}
+			rep.LockedAmount = uf.Amount
+			userReportsMap[k] = rep
+		}
+
+		for _, sum := range summaries {
+			k := getKey(sum.UID, sum.Token)
+			rep, ok := userReportsMap[k]
+			if !ok {
+				rep = newReport(sum.UID, sum.Token, date)
+			}
+			if sum.IsOutcome() {
+				rep.OutcomeAmount = rep.OutcomeAmount.Add(sum.Amount)
+			} else if sum.IsIncome() {
+				rep.IncomeAmount = rep.IncomeAmount.Add(sum.Amount)
+			}
+			userReportsMap[k] = rep
+		}
+
+		userReports := make([]db.ExchangeSpecialUserReport, 0, len(userReportsMap))
+		for _, v := range userReportsMap {
+			userReports = append(userReports, v)
+		}
+		err = db.ExchangeSpecialUserReport{}.CreateBatch(userReports)
+		if err != nil {
+			logger.Errorf("batch create user reports failed: %v", err)
+		}
+	}()
 
 	// persist
 	const typeFina = "fina"

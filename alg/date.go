@@ -19,3 +19,7 @@ func YesterdayDate() string {
 func NewShTime(date string) (time.Time, error) {
 	return time.ParseInLocation("2006-01-02", date, shLoc)
 }
+
+func ParseSHDate(date string) (time.Time, error) {
+	return time.ParseInLocation("2006-01-02", date, shLoc)
+}

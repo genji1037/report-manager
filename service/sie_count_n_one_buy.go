@@ -27,20 +27,13 @@ func (s SIECountNOneBuy) RawData(date string) ([]SIECountRawData, error) {
 	endTime = endTime.Add(CountBoundOffset)
 	beginTime := endTime.Add(-24 * time.Hour)
 
-	payment := open.ThirdPayment{CreateTime: beginTime}
-	err = payment.GetByCreatedAt()
+	rs, err := open.ThirdPayment{}.CreatedAt2ID([]time.Time{beginTime, endTime})
 	if err != nil {
 		return nil, err
 	}
-	begin := payment.ID
 
-	payment.ID = 0
-	payment.CreateTime = endTime
-	err = payment.GetByCreatedAt()
-	if err != nil {
-		return nil, err
-	}
-	end := payment.ID
+	begin := rs[0]
+	end := rs[1]
 
 	buys, err := open.ThirdPayment{}.GetNOneBuy(begin, end)
 	if err != nil {

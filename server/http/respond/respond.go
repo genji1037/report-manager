@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"net/http"
 	"report-manager/logger"
+	"runtime"
 
 	"github.com/gin-gonic/gin"
 )
@@ -26,10 +27,24 @@ func Success(c *gin.Context, data interface{}) {
 	return
 }
 
+func InternalError(c *gin.Context, err error) {
+	_, file, line, _ := runtime.Caller(1)
+	logger.Errorf("%v at %s:%d", err, file, line)
+	Error(c, 500, 500, "internal server error")
+}
+
 func Error(c *gin.Context, status, code int, description interface{}) {
 	c.JSON(status, gin.H{
 		"ok":          false,
 		"error_code":  code,
 		"description": description,
+	})
+}
+
+func BadRequest(c *gin.Context, code int, msg string) {
+	c.JSON(http.StatusBadRequest, gin.H{
+		"ok":          false,
+		"error_code":  code,
+		"description": msg,
 	})
 }

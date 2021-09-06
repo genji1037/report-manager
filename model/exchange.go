@@ -4,9 +4,13 @@ import (
 	"github.com/shopspring/decimal"
 )
 
+type Quote string
+
 const (
-	VolumePrecision = 4
-	PricePrecision  = 4
+	VolumePrecision       = 4
+	PricePrecision        = 4
+	Ask             Quote = "ask"
+	Bid             Quote = "bid"
 )
 
 type OtcDailyTradeReportResp struct {
@@ -61,8 +65,41 @@ type Frozen struct {
 	Token  string          `json:"token"`  // 币种
 }
 
+func (Frozen) FromUserFrozen(ufs []UserFrozen) []Frozen {
+	m := make(map[string]Frozen)
+	for _, uf := range ufs {
+		token := uf.Token
+		f, ok := m[token]
+		if !ok {
+			f.Token = token
+		}
+		f.Amount = f.Amount.Add(uf.Amount)
+		m[token] = f
+	}
+	fs := make([]Frozen, 0)
+	for _, v := range m {
+		fs = append(fs, v)
+	}
+	return fs
+}
+
 type UserFrozen struct {
+	UID string
+	Frozen
+}
+
+type UserAmount struct {
 	UID    string          `json:"uid"`
-	Amount decimal.Decimal `json:"amount"` // 冻结金额
-	Token  string          `json:"token"`  // 币种
+	Amount decimal.Decimal `json:"amount"` // 金额
+}
+
+type UserTokenAmount struct {
+	UserAmount
+	Token string `json:"token"` // 币种
+}
+
+type UserMarketAmount struct {
+	UserAmount
+	Market string `json:"market"` // 市场对
+	Quote  Quote  `json:"quote"`  // 报价方式
 }

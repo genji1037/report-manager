@@ -41,8 +41,8 @@ GROUP BY market_id
 	return result, err
 }
 
-func (OrderTrade) SumFrozenAmountByUID() ([]model.UserFrozen, error) {
-	result := make([]model.UserFrozen, 0)
+func (OrderTrade) SumFrozenAmountByUID() ([]model.UserTokenAmount, error) {
+	result := make([]model.UserTokenAmount, 0)
 	sql := `
 SELECT 
     uid, token, sum(frozen_amount) as amount

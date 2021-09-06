@@ -12,6 +12,7 @@ require (
 	github.com/modern-go/reflect2 v1.0.1 // indirect
 	github.com/pkg/errors v0.8.1
 	github.com/prometheus/client_golang v1.5.0
+	github.com/prometheus/common v0.9.1
 	github.com/rifflock/lfshook v0.0.0-20180920164130-b9218ef580f5
 	github.com/robfig/cron v1.2.0
 	github.com/shopspring/decimal v0.0.0-20200227202807-02e2044944cc
