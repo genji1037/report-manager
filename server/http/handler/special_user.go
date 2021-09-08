@@ -2,6 +2,7 @@ package handler
 
 import (
 	"github.com/gin-gonic/gin"
+	"github.com/jinzhu/gorm"
 	"report-manager/db"
 	"report-manager/server/http/respond"
 )
@@ -17,6 +18,15 @@ func CreateSpecialUser(c *gin.Context) {
 	u.Email = req.Email
 	u.Remark = req.Remark
 	u.Role = db.ExchangeSpecialUserRoleFina
+	if err := u.GetByUID(); err != gorm.ErrRecordNotFound {
+		if err == nil {
+			respond.BizFailed(c, respond.SpecialUserExists(req.UID))
+			return
+		}
+		respond.InternalError(c, err)
+		return
+	}
+
 	if err := u.Create(); err != nil {
 		respond.InternalError(c, err)
 		return

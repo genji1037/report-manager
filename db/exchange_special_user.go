@@ -21,6 +21,10 @@ func (a *ExchangeSpecialUser) Create() error {
 	return gormDb.Create(a).Error
 }
 
+func (a *ExchangeSpecialUser) GetByUID() error {
+	return gormDb.Model(a).Where("uid = ?", a.UID).Last(a).Error
+}
+
 func (ExchangeSpecialUser) DeleteByUID(uid string) error {
 	return gormDb.Delete(new(ExchangeSpecialUser), "uid = ?", uid).Error
 }

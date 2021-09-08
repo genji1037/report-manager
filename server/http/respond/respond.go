@@ -2,6 +2,7 @@ package respond
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"report-manager/logger"
 	"runtime"
@@ -47,4 +48,24 @@ func BadRequest(c *gin.Context, code int, msg string) {
 		"error_code":  code,
 		"description": msg,
 	})
+}
+
+func BizFailed(c *gin.Context, bizErr BizError) {
+	c.JSON(http.StatusBadRequest, gin.H{
+		"ok":          false,
+		"error_code":  bizErr.Code,
+		"description": bizErr.Msg,
+	})
+}
+
+type BizError struct {
+	Code int
+	Msg  string
+}
+
+func SpecialUserExists(uid string) BizError {
+	return BizError{
+		Code: 1001,
+		Msg:  fmt.Sprintf("special user %s exists", uid),
+	}
 }
