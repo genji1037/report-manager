@@ -4,6 +4,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/gorm"
 	"report-manager/db"
+	"report-manager/model"
 	"report-manager/server/http/respond"
 )
 
@@ -75,6 +76,17 @@ func ListSpecialUsers(c *gin.Context) {
 	respond.Success(c, ListSpecialUsersResp{us})
 }
 
+func GetSpecialUserReport(c *gin.Context) {
+	uid := c.Query("uid")
+	date := c.Query("date")
+	rs, err := db.ExchangeSpecialUserReport{}.QueryByDatUID(date, uid)
+	if err != nil {
+		respond.InternalError(c, err)
+		return
+	}
+	respond.Success(c, GetSpecialUserReportResp{rs})
+}
+
 type CreateSpecialUserReq struct {
 	SpecialUser
 }
@@ -95,4 +107,8 @@ type SpecialUser struct {
 	UID    string `form:"uid" json:"uid" binding:"uuid"`
 	Email  string `form:"email" json:"email"`
 	Remark string `form:"remark" json:"remark"`
+}
+
+type GetSpecialUserReportResp struct {
+	Reports []model.ExchangeSpecialUserReport `json:"reports"`
 }

@@ -49,6 +49,7 @@ func Run(host string, port int) {
 		reportAdminGroup.POST("/special_user/delete", handler.DeleteSpecialUser)
 		reportAdminGroup.POST("/special_user/update", handler.UpdateSpecialUser)
 		reportAdminGroup.GET("/special_users", handler.ListSpecialUsers)
+		reportAdminGroup.GET("/special_user/report", handler.GetSpecialUserReport)
 	}
 
 	err := router.Run(fmt.Sprintf("%s:%d", host, port))

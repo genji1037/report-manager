@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"github.com/prometheus/common/log"
 	"github.com/shopspring/decimal"
+	"report-manager/model"
 	"time"
 )
 
@@ -12,7 +13,7 @@ type ExchangeSpecialUserReport struct {
 	CreatedAt     time.Time
 	Dat           string          `gorm:"size:10;not null;index:dat_uid"`
 	UID           string          `gorm:"size:36;not null;index:dat_uid"`
-	Token         string          `gorm:"size:10;not null;index:dat_uid"`
+	Token         string          `gorm:"size:10;not null"`
 	OutcomeAmount decimal.Decimal `sql:"type:decimal(32,16)"` // 支付金额
 	IncomeAmount  decimal.Decimal `sql:"type:decimal(32,16)"` // 收入金额
 	LockedAmount  decimal.Decimal `sql:"type:decimal(32,16)"` // 冻结金额
@@ -61,4 +62,10 @@ func (ExchangeSpecialUserReport) CreateBatch(all []ExchangeSpecialUserReport) er
 	}
 
 	return nil
+}
+
+func (ExchangeSpecialUserReport) QueryByDatUID(date, uid string) ([]model.ExchangeSpecialUserReport, error) {
+	rs := make([]model.ExchangeSpecialUserReport, 0)
+	err := gormDb.Model(new(ExchangeSpecialUserReport)).Where("dat = ? and uid = ?", date, uid).Scan(&rs).Error
+	return rs, err
 }

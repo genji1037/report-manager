@@ -103,3 +103,12 @@ type UserMarketAmount struct {
 	Market string `json:"market"` // 市场对
 	Quote  Quote  `json:"quote"`  // 报价方式
 }
+
+type ExchangeSpecialUserReport struct {
+	Dat           string          `json:"dat"`
+	UID           string          `json:"uid"`
+	Token         string          `json:"token"`
+	OutcomeAmount decimal.Decimal `json:"outcome_amount"` // 支付金额
+	IncomeAmount  decimal.Decimal `json:"income_amount"`  // 收入金额
+	LockedAmount  decimal.Decimal `json:"locked_amount"`  // 冻结金额
+}
