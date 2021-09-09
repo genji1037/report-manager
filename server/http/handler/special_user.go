@@ -80,7 +80,7 @@ type CreateSpecialUserReq struct {
 }
 
 type DeleteSpecialUserReq struct {
-	UID string `json:"uid" binding:"uuid"`
+	UID string `form:"uid" json:"uid" binding:"uuid"`
 }
 
 type UpdateSpecialUserReq struct {
@@ -92,7 +92,7 @@ type ListSpecialUsersResp struct {
 }
 
 type SpecialUser struct {
-	UID    string `json:"uid" binding:"uuid"`
-	Email  string `json:"email"`
-	Remark string `json:"remark"`
+	UID    string `form:"uid" json:"uid" binding:"uuid"`
+	Email  string `form:"email" json:"email"`
+	Remark string `form:"remark" json:"remark"`
 }
