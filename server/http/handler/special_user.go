@@ -79,12 +79,24 @@ func ListSpecialUsers(c *gin.Context) {
 func GetSpecialUserReport(c *gin.Context) {
 	uid := c.Query("uid")
 	date := c.Query("date")
+	u := db.ExchangeSpecialUser{UID: uid}
+	if err := u.GetByUID(); err != nil {
+
+	}
+
 	rs, err := db.ExchangeSpecialUserReport{}.QueryByDatUID(date, uid)
 	if err != nil {
 		respond.InternalError(c, err)
 		return
 	}
-	respond.Success(c, GetSpecialUserReportResp{rs})
+	respond.Success(c, GetSpecialUserReportResp{
+		SpecialUser: SpecialUser{
+			UID:    u.UID,
+			Email:  u.Email,
+			Remark: u.Remark,
+		},
+		Reports: rs,
+	})
 }
 
 type CreateSpecialUserReq struct {
@@ -110,5 +122,6 @@ type SpecialUser struct {
 }
 
 type GetSpecialUserReportResp struct {
+	SpecialUser
 	Reports []model.ExchangeSpecialUserReport `json:"reports"`
 }
