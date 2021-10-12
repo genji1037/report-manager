@@ -25,5 +25,5 @@ func main() {
 		}
 		c.File(fPath)
 	})
-	e.Run("127.0.0.1:17078")
+	e.Run(":17078")
 }
