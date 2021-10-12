@@ -8,7 +8,7 @@ import (
 	"strings"
 )
 
-const validPrefix = "/server-secret-social-network/file"
+const validPrefix = "server-secret-social-network/file"
 
 var addr string
 
