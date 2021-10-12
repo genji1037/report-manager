@@ -50,6 +50,13 @@ func Run(host string, port int) {
 		reportAdminGroup.POST("/special_user/update", handler.UpdateSpecialUser)
 		reportAdminGroup.GET("/special_users", handler.ListSpecialUsers)
 		reportAdminGroup.GET("/special_user/report", handler.GetSpecialUserReport)
+
+		reportAdminGroup.GET("/sugars", handler.GetSugars)
+		reportAdminGroup.GET("/defi_fund/quota", handler.GetDefiFundQuota)
+		reportAdminGroup.GET("/defi_fund/platform_snapshot", handler.GetDefiFundPlatformSnapshot)
+		reportAdminGroup.GET("/secret_chain/pledge", handler.GetSecretChainPledge)
+		reportAdminGroup.GET("/n_one/out", handler.GetNOneOut)
+		reportAdminGroup.GET("/ssns/report", handler.GetSSNSReport)
 	}
 
 	err := router.Run(fmt.Sprintf("%s:%d", host, port))

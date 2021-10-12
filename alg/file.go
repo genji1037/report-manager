@@ -5,7 +5,27 @@ import (
 	"io"
 	"os"
 	"report-manager/logger"
+	"strings"
 )
+
+func GetFilePath(dirPath, filePrefix string) (string, error) {
+	dir, err := os.Open(dirPath)
+	if err != nil {
+		return "", err
+	}
+	fInfos, err := dir.Readdir(0)
+	if err != nil {
+		return "", err
+	}
+
+	for i := range fInfos {
+		fName := fInfos[i].Name()
+		if strings.HasPrefix(fName, filePrefix) {
+			return dirPath + "/" + fName, nil
+		}
+	}
+	return "", fmt.Errorf("could not found file with [%s] prefix", filePrefix)
+}
 
 func WriteTemp(rd io.Reader, filename string) (*os.File, error) {
 	dir := os.TempDir()

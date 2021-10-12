@@ -20,6 +20,8 @@ var tables = []Table{
 	new(SieCount),
 	new(ExchangeSpecialUser),
 	new(ExchangeSpecialUserReport),
+	new(SecretChainPledgeSnapshot),
+	new(SSNSReport),
 }
 
 // 打开数据库

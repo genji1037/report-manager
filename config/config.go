@@ -8,6 +8,7 @@ import (
 
 // config root
 type Server struct {
+	Env              string   `yaml:"env"`
 	Host             string   `yaml:"host"` // 主机地址
 	Port             int      `yaml:"port"` // 端口号
 	Template         Template `yaml:"template"`
@@ -49,6 +50,8 @@ type Proxy struct {
 	OpenPlatform OpenPlatform `yaml:"open_platform"`
 	MallDestroy  MallDestroy  `yaml:"mall_destroy"`
 	RadarOTC     RadarOTC     `yaml:"radar_otc"`
+	DefiFund     DefiFund     `yaml:"defi_fund"`
+	SecretChain  SecretChain  `yaml:"secret_chain"`
 }
 
 type Exchange struct {
@@ -72,6 +75,15 @@ type MallDestroy struct {
 type RadarOTC struct {
 	BaseURI  string `yaml:"base_uri"`
 	Database MySQL  `yaml:"database"`
+}
+
+type DefiFund struct {
+	BaseURI  string `yaml:"base_uri"`
+	Database MySQL  `yaml:"database"`
+}
+
+type SecretChain struct {
+	BaseURI string `yaml:"base_uri"`
 }
 
 type MySQL struct {

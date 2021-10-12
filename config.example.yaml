@@ -1,3 +1,5 @@
+env: dev
+
 host: 0.0.0.0
 
 port: 18096
@@ -71,3 +73,15 @@ proxy:
       charset: utf8
       max_idle_conns: 2
       max_open_conns: 10
+  defi_fund:
+    base_uri: https://testm.isecret.im/defi_fund
+    database:
+      host: 127.0.0.1
+      user: root
+      password: 123
+      database: defi_fund
+      charset: utf8
+      max_idle_conns: 2
+      max_open_conns: 10
+  secret_chain:
+    base_uri: https://testm.isecret.im
