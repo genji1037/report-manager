@@ -20,7 +20,7 @@ func main() {
 		i := strings.LastIndex(path, "/")
 		fPath, err := alg.GetFilePath(path[:i], path[i+1:])
 		if err != nil {
-			c.JSON(http.StatusNotFound, nil)
+			c.JSON(http.StatusNotFound, err.Error())
 			return
 		}
 		c.File(fPath)
