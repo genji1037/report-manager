@@ -85,3 +85,5 @@ proxy:
       max_open_conns: 10
   secret_chain:
     base_uri: https://testm.isecret.im
+  ssns_file:
+    base_uri: https://testm.isecret.im
