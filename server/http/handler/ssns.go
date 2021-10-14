@@ -149,7 +149,11 @@ func getRewardFileSummary(prefix string) (decimal.Decimal, error) {
 		return decimal.Decimal{}, err
 	}
 
-	tempPath := os.TempDir() + prefix
+	tempDir := os.TempDir()
+	if !strings.HasSuffix(tempDir, "/") {
+		tempDir += "/"
+	}
+	tempPath := tempDir + prefix
 	f, err := os.Create(tempPath)
 	if err != nil {
 		return decimal.Decimal{}, err
