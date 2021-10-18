@@ -31,3 +31,11 @@ func NewShTime(date string) (time.Time, error) {
 func ParseSHDate(date string) (time.Time, error) {
 	return time.ParseInLocation("2006-01-02", date, shLoc)
 }
+
+func ConvertLayout(str, oldLayout, newLayout string) (string, error) {
+	t, err := time.Parse(oldLayout, str)
+	if err != nil {
+		return "", err
+	}
+	return t.Format(newLayout), nil
+}

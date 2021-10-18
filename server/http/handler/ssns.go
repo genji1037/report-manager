@@ -90,10 +90,11 @@ func GetSSNSReport(c *gin.Context) {
 		r.BonusAmount = networkRewardSum.Add(linkRewardSum)
 
 		var linkFilePrefix string
+		dateForLink, _ := alg.ConvertLayout(date, "2006-01-02", "2006-1-2") // already checked
 		if seq == 1 {
-			linkFilePrefix = fmt.Sprintf("relation_%s+%d", date, 4)
+			linkFilePrefix = fmt.Sprintf("relation_%s+%d", dateForLink, 4)
 		} else {
-			linkFilePrefix = fmt.Sprintf("relation_%s+%d", date, 16)
+			linkFilePrefix = fmt.Sprintf("relation_%s+%d", dateForLink, 16)
 		}
 		linkFileBs, err := proxy.GetSSNSFile("server-secret-social-network/file/consensus/relation", linkFilePrefix)
 		if assertErr(err) {
