@@ -6,7 +6,6 @@ import (
 	"github.com/shopspring/decimal"
 	"io/ioutil"
 	"net/http"
-	"report-manager/config"
 )
 
 type RadarOTCResponse struct {
@@ -38,19 +37,19 @@ type BlockChainTransfer struct {
 	Error      string           `json:"error"`
 }
 
-func GetRetryOrFailedTransfer() ([]BlockChainTransfer, error) {
-	baseURI := config.GetServer().Proxy.RadarOTC.BaseURI
-	data, err := radarOTCGet(baseURI + "/v3/otc/manager/transfer/retryOrFailed")
-	if err != nil {
-		return nil, fmt.Errorf("radar OTC get failed: %v", err)
-	}
-	response := GetRetryOrFailedTransferResponse{}
-	err = json.Unmarshal(data, &response)
-	if err != nil {
-		return nil, err
-	}
-	return response.Transfers, nil
-}
+//func GetRetryOrFailedTransfer() ([]BlockChainTransfer, error) {
+//	baseURI := config.GetServer().Proxy.RadarOTC.BaseURI
+//	data, err := radarOTCGet(baseURI + "/v3/otc/manager/transfer/retryOrFailed")
+//	if err != nil {
+//		return nil, fmt.Errorf("radar OTC get failed: %v", err)
+//	}
+//	response := GetRetryOrFailedTransferResponse{}
+//	err = json.Unmarshal(data, &response)
+//	if err != nil {
+//		return nil, err
+//	}
+//	return response.Transfers, nil
+//}
 
 func radarOTCGet(uri string) (json.RawMessage, error) {
 	resp, err := httpClient.Get(uri)

@@ -6,7 +6,6 @@ import (
 	"report-manager/config"
 	"report-manager/db/radar_otc"
 	"report-manager/model"
-	"report-manager/proxy"
 	"strconv"
 	"strings"
 	"time"
@@ -222,22 +221,22 @@ func (r *RadarWaitingRealNames) Ignore() bool {
 	return r.Num == 0
 }
 
-type RadarFailedTransfer struct {
-	Num int
-}
+//type RadarFailedTransfer struct {
+//	Num int
+//}
 
-func (r *RadarFailedTransfer) Collect() error {
-	transfers, err := proxy.GetRetryOrFailedTransfer()
-	r.Num = len(transfers)
-	return err
-}
+//func (r *RadarFailedTransfer) Collect() error {
+//	transfers, err := proxy.GetRetryOrFailedTransfer()
+//	r.Num = len(transfers)
+//	return err
+//}
 
-func (r *RadarFailedTransfer) Render(s string) string {
-	return render(s, map[string]string{
-		"failed_transfer_num": strconv.Itoa(r.Num),
-	})
-}
-
-func (r *RadarFailedTransfer) Ignore() bool {
-	return r.Num == 0
-}
+//func (r *RadarFailedTransfer) Render(s string) string {
+//	return render(s, map[string]string{
+//		"failed_transfer_num": strconv.Itoa(r.Num),
+//	})
+//}
+//
+//func (r *RadarFailedTransfer) Ignore() bool {
+//	return r.Num == 0
+//}

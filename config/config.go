@@ -49,10 +49,10 @@ type Proxy struct {
 	Candy        Candy        `yaml:"candy"`
 	OpenPlatform OpenPlatform `yaml:"open_platform"`
 	MallDestroy  MallDestroy  `yaml:"mall_destroy"`
-	RadarOTC     RadarOTC     `yaml:"radar_otc"`
-	DefiFund     DefiFund     `yaml:"defi_fund"`
-	SecretChain  SecretChain  `yaml:"secret_chain"`
-	SSNSFile     SSNSFile     `yaml:"ssns_file"`
+	//RadarOTC     RadarOTC     `yaml:"radar_otc"`
+	DefiFund    DefiFund    `yaml:"defi_fund"`
+	SecretChain SecretChain `yaml:"secret_chain"`
+	SSNSFile    SSNSFile    `yaml:"ssns_file"`
 }
 
 type Exchange struct {

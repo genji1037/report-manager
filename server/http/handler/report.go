@@ -18,7 +18,7 @@ func DoReport(c *gin.Context) {
 	case "radar_otc_report":
 		err = service.RadarOTCReport()
 	case "radar_notice":
-		err = service.RadarOTCNotice()
+		//err = service.RadarOTCNotice()
 	case "exchange_locked_tokens":
 		err = service.ExchangeLockedTokensReport(true)
 	default:

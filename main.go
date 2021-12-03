@@ -8,7 +8,6 @@ import (
 	"report-manager/db/defi_fund"
 	"report-manager/db/exchange"
 	"report-manager/db/open"
-	"report-manager/db/radar_otc"
 	"report-manager/db/types"
 	"report-manager/job"
 	"report-manager/logger"
@@ -38,11 +37,11 @@ func main() {
 	}
 	logger.Infof("exchange db connected")
 
-	err = radar_otc.Open(types.NewConnection(serverCfg.Proxy.RadarOTC.Database))
-	if err != nil {
-		logger.Panicf("Failed to open radar otc database, %v", err)
-	}
-	logger.Infof("radar otc db connected")
+	//err = radar_otc.Open(types.NewConnection(serverCfg.Proxy.RadarOTC.Database))
+	//if err != nil {
+	//	logger.Panicf("Failed to open radar otc database, %v", err)
+	//}
+	//logger.Infof("radar otc db connected")
 
 	err = open.Open(types.NewConnection(serverCfg.Proxy.OpenPlatform.Database))
 	if err != nil {

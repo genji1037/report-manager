@@ -21,7 +21,7 @@ func StartCronJob() {
 	mustAddFunc(c, "0 0 21 * * *", withErr(service.RadarOTCReport))
 	mustAddFunc(c, "0 10 0 * * *", withErr(service.MallDestroyFailedReport))
 	// 手雷OTC提醒（待审核商户提醒，失败或待重试的转账）
-	mustAddFunc(c, "@every 30m", withErr(service.RadarOTCNotice))
+	//mustAddFunc(c, "@every 30m", withErr(service.RadarOTCNotice))
 	mustAddFunc(c, "0 0 0 * * *", withErr(service.PersistsOTCLockedTokens))
 	mustAddFunc(c, "0 0 0 * * *", withErr(service.PersistsCTCLockedTokens))
 	mustAddFunc(c, "0 30 23 * * *", withErr(func() error { return service.ExchangeLockedTokensReport(false) }))
