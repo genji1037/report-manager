@@ -158,22 +158,31 @@ func MakeExchangeLockedTokensReport(date string) (string, error) {
 		finaUIDs[i] = fina.UID
 	}
 
+	sortBasis := make(map[string]int)
+	for i, token := range cfg.ExchangeLockedTokenSortBasis {
+		sortBasis[token] = i
+	}
+
 	c1 := &collector.OTCFrozenAmount{
 		RenderKey: "otc_frozen_amount_fina",
 		Include:   finaUIDs,
+		SortBasis: sortBasis,
 	}
 	c2 := &collector.OTCFrozenAmount{
 		RenderKey: "otc_frozen_amount_user",
 		Exclude:   finaUIDs,
+		SortBasis: sortBasis,
 	}
 	c3 := &collector.CTCFrozenAmount{
 		RenderKey:  "ctc_frozen_amount_fina",
 		Include:    finaUIDs,
 		GroupByUID: true,
+		SortBasis:  sortBasis,
 	}
 	c4 := &collector.CTCFrozenAmount{
 		RenderKey: "ctc_frozen_amount_user",
 		Exclude:   finaUIDs,
+		SortBasis: sortBasis,
 	}
 	collectors := []collector.Collector{c1, c2, c3, c4}
 

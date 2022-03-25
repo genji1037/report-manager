@@ -8,14 +8,15 @@ import (
 
 // config root
 type Server struct {
-	Env              string   `yaml:"env"`
-	Host             string   `yaml:"host"` // 主机地址
-	Port             int      `yaml:"port"` // 端口号
-	Template         Template `yaml:"template"`
-	Database         MySQL    `yaml:"database"`
-	Proxy            Proxy    `yaml:"proxy"`
-	ExchangeFinaUIDs []string `yaml:"exchange_fina_uids"` // 统计财务UID列表
-	WhiteUIDs        []string `yaml:"white_uids"`         // 统计白名单列表
+	Env                          string   `yaml:"env"`
+	Host                         string   `yaml:"host"` // 主机地址
+	Port                         int      `yaml:"port"` // 端口号
+	Template                     Template `yaml:"template"`
+	Database                     MySQL    `yaml:"database"`
+	Proxy                        Proxy    `yaml:"proxy"`
+	ExchangeFinaUIDs             []string `yaml:"exchange_fina_uids"`               // 统计财务UID列表
+	WhiteUIDs                    []string `yaml:"white_uids"`                       // 统计白名单列表
+	ExchangeLockedTokenSortBasis []string `yaml:"exchange_locked_token_sort_basis"` // 交易所冻结货币排序依据
 }
 
 type Template struct {

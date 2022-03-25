@@ -83,6 +83,31 @@ func (Frozen) FromUserFrozen(ufs []UserFrozen) []Frozen {
 	return fs
 }
 
+type FrozenSlice struct {
+	S         []Frozen
+	SortBasis map[string]int
+}
+
+func (f FrozenSlice) Len() int {
+	return len(f.S)
+}
+
+func (f FrozenSlice) Less(i, j int) bool {
+	vi, ok := f.SortBasis[f.S[i].Token]
+	if !ok {
+		return false
+	}
+	vj, ok := f.SortBasis[f.S[j].Token]
+	if !ok {
+		return true
+	}
+	return vi < vj
+}
+
+func (f FrozenSlice) Swap(i, j int) {
+	f.S[i], f.S[j] = f.S[j], f.S[i]
+}
+
 type UserFrozen struct {
 	UID string
 	Frozen

@@ -8,6 +8,7 @@ import (
 	"report-manager/model"
 	"report-manager/proxy"
 	"report-manager/util"
+	"sort"
 	"strconv"
 	"strings"
 	"time"
@@ -248,6 +249,7 @@ func (l *LatestPrice) Render(ori string) string {
 
 type OTCFrozenAmount struct {
 	Data      []model.Frozen
+	SortBasis map[string]int
 	Include   []string
 	Exclude   []string
 	RenderKey string
@@ -294,8 +296,15 @@ func (o *OTCFrozenAmount) Collect() error {
 
 func (o OTCFrozenAmount) Render(ori string) string {
 	lineTemp := config.GetServer().Template.OTCFrozenAmountLine
-	lineArr := make([]string, 0, len(o.Data))
-	for _, v := range o.Data {
+
+	frozenSlice := model.FrozenSlice{
+		S:         o.Data,
+		SortBasis: o.SortBasis,
+	}
+	sort.Sort(frozenSlice)
+
+	lineArr := make([]string, 0, len(frozenSlice.S))
+	for _, v := range frozenSlice.S {
 		lineArr = append(lineArr, render(lineTemp, map[string]string{
 			"token":  v.Token,
 			"amount": v.Amount.String(),
@@ -315,6 +324,7 @@ func (o OTCFrozenAmount) Render(ori string) string {
 type CTCFrozenAmount struct {
 	Data       []model.Frozen
 	UserFrozen []model.UserFrozen
+	SortBasis  map[string]int
 	GroupByUID bool
 	Include    []string
 	Exclude    []string
@@ -337,8 +347,15 @@ func (o *CTCFrozenAmount) Collect() error {
 
 func (o CTCFrozenAmount) Render(ori string) string {
 	lineTemp := config.GetServer().Template.OTCFrozenAmountLine
-	lineArr := make([]string, 0, len(o.Data))
-	for _, v := range o.Data {
+
+	frozenSlice := model.FrozenSlice{
+		S:         o.Data,
+		SortBasis: o.SortBasis,
+	}
+	sort.Sort(frozenSlice)
+
+	lineArr := make([]string, 0, len(frozenSlice.S))
+	for _, v := range frozenSlice.S {
 		lineArr = append(lineArr, render(lineTemp, map[string]string{
 			"token":  v.Token,
 			"amount": v.Amount.String(),
